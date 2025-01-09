@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 
 ///Imports///
 ///@notice stablecoin contract
-import {NebulaQuestCoin} from "./NebulaQuestCoin.sol";
+import {NebulaStablecoin} from "./NebulaStablecoin.sol";
 import {NebulaEvolution} from "./NebulaEvolution.sol";
 
 ///@notice OpenZeppelin tools
@@ -38,7 +38,7 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
 
     ///Instances///
     ///@notice immutable variable to store the contract instance
-    NebulaQuestCoin public immutable i_coin;
+    NebulaStablecoin public immutable i_coin;
     NebulaEvolution public immutable i_nft;
 
     ///Variables///
@@ -84,8 +84,8 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
     constructor (
         address _admin
     ) Ownable(_admin) {
-        i_coin = new NebulaQuestCoin("Nebula Stablecoin","NSN", _admin, address(this));
-        i_nft = new NebulaEvolution("Nebula Evolution","NET", _admin, address(this));
+        i_coin = new NebulaStablecoin("Nebula Stablecoin","NSC", _admin, address(this));
+        i_nft = new NebulaEvolution("Nebula Evolution","NEV", _admin, address(this));
     }
 
     ///external///

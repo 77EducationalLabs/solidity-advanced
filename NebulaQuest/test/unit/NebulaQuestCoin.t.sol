@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 
 import {Helper} from "../helpers/Helper.t.sol";
 
-contract NebulaQuestCoinTest is Helper {
+contract NebulaStablecoinTest is Helper {
     
     //// Deploy Check ////
         function test_stablecoinDeploy() public view {
@@ -45,7 +45,7 @@ contract NebulaQuestCoinTest is Helper {
         function test_minterSuccessfullyMint() public {
             vm.prank(s_minter);
             vm.expectEmit();
-            emit NebulaQuestCoin_TokenMinted(s_user01, AMOUNT_TO_MINT);
+            emit NebulaStablecoin_TokenMinted(s_user01, AMOUNT_TO_MINT);
             stablecoin.mint(s_user01, AMOUNT_TO_MINT);
         }
 
@@ -68,7 +68,7 @@ contract NebulaQuestCoinTest is Helper {
             //Burns the token
             vm.prank(s_minter);
             vm.expectEmit();
-            emit NebulaQuestCoin_TokenBurned(AMOUNT_TO_MINT);
+            emit NebulaStablecoin_TokenBurned(AMOUNT_TO_MINT);
             stablecoin.burn(AMOUNT_TO_MINT);
 
             assertEq(stablecoin.balanceOf(s_minter), 0);

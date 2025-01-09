@@ -2,19 +2,12 @@
 
 pragma solidity 0.8.26;
 
-/////////////
-///Imports///
-/////////////
+///// Imports /////
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {ERC20Permit, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-////////////
-///Errors///
-////////////
+///// Interfaces, Libraries /////
 
-///////////////////////////
-///Interfaces, Libraries///
-///////////////////////////
 /**
     * @custom:purpose this is an example of documentation
     * @title Nebula Quest Stablecoin
@@ -23,38 +16,20 @@ import {ERC20Permit, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions
     * @notice in case of any security breach please contact us at:
     * @custom:security-contact security@77innovationlabs.com
 */
-contract NebulaQuestCoin is ERC20, AccessControl, ERC20Permit {
+contract NebulaStablecoin is ERC20, AccessControl, ERC20Permit {
 
-    ///////////////////////
-    ///Type declarations///
-    ///////////////////////
-
-    /////////////////////
-    ///State variables///
-    /////////////////////
-
-    ///Constant & Immutable///
+    ///// Constant & Immutable /////
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    ////////////
-    ///Events///
-    ////////////
+    ///// Events /////
     ///@notice Event emitted when an amount of token is minted
-    event NebulaQuestCoin_TokenMinted(address _to, uint256 _amount);
+    event NebulaStablecoin_TokenMinted(address _to, uint256 _amount);
     ///@notice Event emitted when an amount of token is burned
-    event NebulaQuestCoin_TokenBurned(uint256 _amount);
+    event NebulaStablecoin_TokenBurned(uint256 _amount);
 
-    ///////////////
-    ///Modifiers///
-    ///////////////
+    ///// Functions /////
 
-    ///////////////
-    ///Functions///
-    ///////////////
-
-    /////////////////
     ///constructor///
-    /////////////////
     /**
         * @notice Constructor to initialize inherited storage variables
         * @param _name The ERC20 token name
@@ -72,14 +47,7 @@ contract NebulaQuestCoin is ERC20, AccessControl, ERC20Permit {
         _grantRole(MINTER_ROLE, _minter);
     }
 
-    ///////////////////////
-    ///receive function ///
-    ///fallback function///
-    ///////////////////////
-
-    //////////////
     ///external///
-    //////////////
     /**
         * @notice External Function to mint controlled amount of tokens
         * @param _to The user address who will receive the amount
@@ -87,7 +55,7 @@ contract NebulaQuestCoin is ERC20, AccessControl, ERC20Permit {
         * @dev This function must only be accessed by authorized actors.
     */
     function mint(address _to, uint256 _amount) external payable onlyRole(MINTER_ROLE){
-        emit NebulaQuestCoin_TokenMinted(_to, _amount);
+        emit NebulaStablecoin_TokenMinted(_to, _amount);
 
         _mint(_to, _amount);
     }
@@ -98,24 +66,8 @@ contract NebulaQuestCoin is ERC20, AccessControl, ERC20Permit {
         * @dev This functions must only accessed by authorized actors.
     */
     function burn(uint256 _amount) external payable onlyRole(MINTER_ROLE){
-        emit NebulaQuestCoin_TokenBurned(_amount);
+        emit NebulaStablecoin_TokenBurned(_amount);
 
         _burn(msg.sender, _amount);
     }
-
-    ////////////
-    ///public///
-    ////////////
-
-    //////////////
-    ///internal///
-    //////////////
-
-    /////////////
-    ///private///
-    /////////////
-
-    /////////////////
-    ///view & pure///
-    /////////////////
 }

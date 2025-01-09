@@ -24,7 +24,7 @@ contract NebulaQuest is Helper {
 
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaQuestCoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
+            emit NebulaStablecoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
             quest.submitAnswers(examNumber, correctAnswers);
 
             uint256 user01Balance = coin.balanceOf(s_user01);
@@ -49,7 +49,7 @@ contract NebulaQuest is Helper {
 
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaQuestCoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
+            emit NebulaStablecoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
             quest.submitAnswers(examNumber, correctAnswers);
 
             vm.prank(s_user01);
@@ -75,7 +75,7 @@ contract NebulaQuest is Helper {
 
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaQuestCoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
+            emit NebulaStablecoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
             quest.submitAnswers(examNumber, correctAnswers);
 
             uint256 user01Balance = coin.balanceOf(s_user01);

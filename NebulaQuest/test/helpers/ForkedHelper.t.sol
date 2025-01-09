@@ -6,7 +6,7 @@ pragma solidity 0.8.26;
 import {Test, console2} from "forge-std/Test.sol";
 
 //Protocol Contracts
-import {NebulaQuestCoin} from "../../src/NebulaQuestCoin.sol";
+import {NebulaStablecoin} from "../../src/NebulaStablecoin.sol";
 import {NebulaQuest} from "../../src/NebulaQuest.sol";
 import {NebulaEvolution} from "../../src/NebulaEvolution.sol";
 
@@ -30,7 +30,7 @@ abstract contract ForkedHelper is Test {
     NebulaQuest quest;
 
     //NebulaQuest variables
-    NebulaQuestCoin coin;
+    NebulaStablecoin coin;
     NebulaEvolution nft;
 
     //Stablecoin variables
@@ -66,8 +66,8 @@ abstract contract ForkedHelper is Test {
     uint256 constant EXP_SEVEN = 6000;
 
     //Events
-    event NebulaQuestCoin_TokenMinted(address _to, uint256 _amount);
-    event NebulaQuestCoin_TokenBurned(uint256 _amount);
+    event NebulaStablecoin_TokenMinted(address _to, uint256 _amount);
+    event NebulaStablecoin_TokenBurned(uint256 _amount);
     event NebulaQuest_AnswersUpdated(uint8 examIndex);
     event NebulaQuest_ExamFailed(address user, uint8 examIndex, uint16 score);
     event NebulaQuest_ExamPassed(address user, uint8 examIndex, uint16 score);
@@ -100,7 +100,7 @@ abstract contract ForkedHelper is Test {
         //Mint tokens
         vm.prank(s_minter);
         vm.expectEmit();
-        emit NebulaQuestCoin_TokenMinted(s_user01, AMOUNT_TO_MINT);
+        emit NebulaStablecoin_TokenMinted(s_user01, AMOUNT_TO_MINT);
         coin.mint(s_user01, AMOUNT_TO_MINT);
         _;
     }
