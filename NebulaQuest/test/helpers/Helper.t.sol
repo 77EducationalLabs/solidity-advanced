@@ -3,16 +3,18 @@
 pragma solidity 0.8.26;
 
 //Foundry Tools
-import {Test, console2} from "forge-std/Test.sol";
+import { Test, console2 } from "forge-std/Test.sol";
 
 //Protocol Contracts
-import {NebulaStablecoin} from "../../src/NebulaStablecoin.sol";
-import {NebulaQuest} from "../../src/NebulaQuest.sol";
-import {NebulaEvolution} from "../../src/NebulaEvolution.sol";
+import { NebulaStablecoin } from "../../src/NebulaStablecoin.sol";
+import { NebulaQuest } from "../../src/NebulaQuest.sol";
+import { NebulaEvolution } from "../../src/NebulaEvolution.sol";
+import { NebulaAirdrop  } from "../../src/NebulaAirdrop.sol";
+import { NebulaQuestToken } from "../../src/NebulaQuestToken.sol";
 
 //Helpers
-import {Strings} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
+import { Strings } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
 
 abstract contract Helper is Test {
 
@@ -23,6 +25,8 @@ abstract contract Helper is Test {
     NebulaStablecoin stablecoin;
     NebulaQuest quest;
     NebulaEvolution evolution;
+    NebulaAirdrop drop;
+    NebulaQuestToken token;
 
     //NebulaQuest variables
     NebulaStablecoin coin;
@@ -35,14 +39,18 @@ abstract contract Helper is Test {
     //State Variables ~ Utils
     address s_admin = makeAddr("s_admin");
     address s_minter = makeAddr("s_minter");
+    address s_user;
+    uint256 s_userPrivateKey;
     address s_user01 = address(1);
     address s_user02 = address(2);
     address s_user03 = address(3);
     address s_user04 = address(4);
     
-    //Token Amounts
+    //Token Amounts - MAGIC NUMBERS
     uint256 constant AMOUNT_TO_MINT = 10*10**18;
     uint256 constant SCORE_TEN_OF_TEN = 1000 *10**18;
+    ///Variable to define de value to be distributed through the airdrop
+    uint256 constant AMOUNT = 5 * 1e18;
 
     //Testing Utils
     uint256 constant LEVEL_ONE = 1;
@@ -59,6 +67,13 @@ abstract contract Helper is Test {
     uint256 constant EXP_FIVE = 4000;
     uint256 constant EXP_SIX = 5000;
     uint256 constant EXP_SEVEN = 6000;
+
+    //Merkle Stuff
+    bytes32 constant MERKLE_ROOT = 0x864afd4c7895ba9b3dfaafecef38453e7ccac35762c169051c99ed3412f19362;
+    //The proofs for the "first branch" of the tree
+    bytes32 constant PROOF_ONE = 0x80f2a786286ac1b15e44029c244b0148c6e5140530d0b48c678235945822c1f6; //l8
+    bytes32 constant PROOF_TWO = 0x443568f55ac26d0b2805f40148bc2a7bc63847a4e84bcf6e3154b239463f9e13; //l9
+    bytes32[] s_proof = [PROOF_ONE, PROOF_TWO];
 
     //Events
     event NebulaStablecoin_TokenMinted(address _to, uint256 _amount);
@@ -84,11 +99,20 @@ abstract contract Helper is Test {
         stablecoin = new NebulaStablecoin("Nebula Stablecoin","NSN", s_admin, s_minter);
         quest = new NebulaQuest(s_admin);
         evolution = new NebulaEvolution("Nebula Evolution","NET", s_admin, s_minter);
+        token = new NebulaQuestToken(s_admin, s_admin);
+        drop = new NebulaAirdrop(MERKLE_ROOT, token);
+
+        (s_user, s_userPrivateKey) = makeAddrAndKey("s_user");
+
+        //Getters
         coin = quest.i_coin();
         nft = quest.i_nft();
-
         ADMIN_ROLE = stablecoin.DEFAULT_ADMIN_ROLE();
         MINTER_ROLE = stablecoin.MINTER_ROLE();
+        
+        //Grant minting powers to NebulaAirdrop
+        vm.prank(s_admin);
+        token.grantRole(MINTER_ROLE, address(drop));
     }
 
     modifier mintTokens(){
@@ -182,4 +206,10 @@ abstract contract Helper is Test {
         emit NebulaQuest_AnswersUpdated(examNumber);
         quest.answerSetter(examNumber, correctAnswers);
     }
+
+    function helperSignMessage(uint256 _privKey, address _account) public view returns (uint8 _v, bytes32 _r, bytes32 _s) {
+        bytes32 digest = drop.getMessageHash(_account, AMOUNT);
+        (_v, _r, _s) = vm.sign(_privKey, digest);
+    }
+
 }
