@@ -1,7 +1,7 @@
 ///SPDX-License-Identifier: MIT
-
 pragma solidity 0.8.26;
 
+///// Imports /////
 import { NebulaQuestToken } from "./NebulaQuestToken.sol";
 
 import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
@@ -21,8 +21,6 @@ contract NebulaAirdrop is EIP712{
 
     ///@notice constant variable to hold the message typehash
     bytes32 constant MESSAGE_TYPEHASH = keccak256("AirdropInfo(address user, uint256 amount)");
-    ///@notice constant variable to control user claims
-    uint8 constant ONE = 1;
 
     ///@notice immutable variable to store the token address
     NebulaQuestToken immutable i_coin;
@@ -31,17 +29,17 @@ contract NebulaAirdrop is EIP712{
 
     ///// Storage /////
     ///@notice storage variable to keep track of address that already claimed. ONE == true
-    mapping(address => uint8) private s_hasClaimed;
+    mapping(address user => bool hasClaimed) private s_hasClaimed;
 
     ///// Events /////
     ///@notice event emitted when a claim successfully happens
     event NebulaAirdrop_SuccessfulClaimed(address user, uint256 amountClaimed);
 
     ///// Errors /////
-    ///@notice error emitted when an user is not allowed
-    error NebulaAirdrop_UserNotAllowed();
     ///@notice error emitted when an user already claimed
     error NebulaAirdrop_UserAlreadyClaimed();
+    ///@notice error emitted when an user is not allowed
+    error NebulaAirdrop_UserNotAllowed();
     ///@notice error emitted when the provided signature is invalid
     error NebulaAirdrop__InvalidSignature();
 
@@ -49,7 +47,7 @@ contract NebulaAirdrop is EIP712{
     constructor(
         bytes32 _root,
         NebulaQuestToken _coin
-        ) EIP712("Nebula Airdrop", "1"){
+    ) EIP712("Nebula Airdrop", "1"){
         i_merkleRoot = _root;
         i_coin = _coin;
     }
@@ -62,7 +60,7 @@ contract NebulaAirdrop is EIP712{
         bytes32 _r,
         bytes32 _s
     ) external {
-        if(s_hasClaimed[_claimer] == ONE) revert NebulaAirdrop_UserAlreadyClaimed();
+        if(s_hasClaimed[_claimer]) revert NebulaAirdrop_UserAlreadyClaimed();
 
         //Recover the signer e check against the claimer address.
         if (!_isValidSignature(_claimer, getMessageHash(_claimer, _amount), _v, _r, _s)) revert NebulaAirdrop__InvalidSignature();
@@ -75,7 +73,7 @@ contract NebulaAirdrop is EIP712{
         if(!MerkleProof.verify(_proofs, i_merkleRoot, leaf)) revert NebulaAirdrop_UserNotAllowed();
 
         //Update user status
-        s_hasClaimed[_claimer] = ONE;
+        s_hasClaimed[_claimer] = true;
 
         emit NebulaAirdrop_SuccessfulClaimed(_claimer, _amount);
 
@@ -84,26 +82,24 @@ contract NebulaAirdrop is EIP712{
     }
 
     function claimNebulaQuestToken(
-        address _claimer,
         uint256 _amount,
         bytes32[] calldata _proofs
     ) external {
-        if(s_hasClaimed[_claimer] == ONE) revert NebulaAirdrop_UserAlreadyClaimed();
+        if(s_hasClaimed[msg.sender]) revert NebulaAirdrop_UserAlreadyClaimed();
 
-        //TODO
         //Verify the Merkle Proof calculating the lead node hash
-        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(_claimer, _amount))));
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(msg.sender, _amount))));
 
         //Checks if the user is allowed by reconstructing the merkle root using proofs and the specific leaf
         if(!MerkleProof.verify(_proofs, i_merkleRoot, leaf)) revert NebulaAirdrop_UserNotAllowed();
 
         //Update user status
-        s_hasClaimed[_claimer] = ONE;
+        s_hasClaimed[msg.sender] = true;
 
-        emit NebulaAirdrop_SuccessfulClaimed(_claimer, _amount);
+        emit NebulaAirdrop_SuccessfulClaimed(msg.sender, _amount);
 
         //Mint tokens
-        i_coin.mint(_claimer, _amount);
+        i_coin.mint(msg.sender, _amount);
     }
 
     /**
@@ -134,11 +130,11 @@ contract NebulaAirdrop is EIP712{
         uint8 _v,
         bytes32 _r,
         bytes32 _s
-    ) internal pure returns (bool){
+    ) internal pure returns (bool _isValid){
         (
             address actualSigner,
                                 ,
         ) = ECDSA.tryRecover(_digest, _v, _r, _s);
-        return (actualSigner == _claimer);
+        _isValid = actualSigner == _claimer;
     }
 }
