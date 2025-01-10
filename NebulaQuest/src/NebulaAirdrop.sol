@@ -6,8 +6,7 @@ import { NebulaQuestToken } from "./NebulaQuestToken.sol";
 
 import { MerkleProof } from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
-import { SignatureChecker, ECDSA } from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
-import { MessageHashUtils } from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract NebulaAirdrop is EIP712{
     ///// Type Declarations /////
