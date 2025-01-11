@@ -45,6 +45,8 @@ abstract contract Helper is Test {
     address s_user02 = address(2);
     address s_user03 = address(3);
     address s_user04 = address(4);
+    uint48 s_deadline = uint48(block.timestamp + 60);
+    uint48 s_nonce;
     
     //Token Amounts - MAGIC NUMBERS
     uint256 constant AMOUNT_TO_MINT = 10*10**18;
@@ -207,8 +209,13 @@ abstract contract Helper is Test {
         quest.answerSetter(examNumber, correctAnswers);
     }
 
-    function helperSignMessage(uint256 _privKey, address _account) public view returns (uint8 _v, bytes32 _r, bytes32 _s) {
-        bytes32 digest = drop.getMessageHash(_account, AMOUNT);
+    function helperSignMessage(
+        uint256 _privKey, 
+        address _account, 
+        uint48 _deadline, 
+        uint48 _nonce
+    ) public view returns(uint8 _v, bytes32 _r, bytes32 _s) {
+        bytes32 digest = drop.getMessageHash(_account, _deadline, _nonce, AMOUNT);
         (_v, _r, _s) = vm.sign(_privKey, digest);
     }
 

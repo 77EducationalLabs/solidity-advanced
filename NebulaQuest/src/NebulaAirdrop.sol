@@ -16,11 +16,13 @@ contract NebulaAirdrop is EIP712{
     ///@notice Struct to hold the message struct
     struct AirdropInfo{
         address user;
+        uint48 deadline;
+        uint48 nonces;
         uint256 amount;
     }
 
     ///@notice constant variable to hold the message typehash
-    bytes32 constant MESSAGE_TYPEHASH = keccak256("AirdropInfo(address user, uint256 amount)");
+    bytes32 constant MESSAGE_TYPEHASH = keccak256("AirdropInfo(address user, uint48 deadline, uint48 nonces, uint256 amount)");
 
     ///@notice immutable variable to store the token address
     NebulaQuestToken immutable i_coin;
@@ -30,6 +32,8 @@ contract NebulaAirdrop is EIP712{
     ///// Storage /////
     ///@notice storage variable to keep track of address that already claimed. ONE == true
     mapping(address user => bool hasClaimed) private s_hasClaimed;
+    ///@notice mapping to storage user's nonces avoiding replay attacks
+    mapping(address user => uint48 nonce) private s_nonces;
 
     ///// Events /////
     ///@notice event emitted when a claim successfully happens
@@ -42,6 +46,8 @@ contract NebulaAirdrop is EIP712{
     error NebulaAirdrop_UserNotAllowed();
     ///@notice error emitted when the provided signature is invalid
     error NebulaAirdrop__InvalidSignature();
+    ///@notice error emitted when a signature deadline has passed
+    error NebulaAirdrop_ExpireSignature(uint48 deadline, uint256 timeNow);
 
     ///// Functions /////
     constructor(
@@ -56,14 +62,16 @@ contract NebulaAirdrop is EIP712{
         address _claimer,
         uint256 _amount,
         bytes32[] calldata _proofs,
+        uint48 _deadline,
         uint8 _v,
         bytes32 _r,
         bytes32 _s
     ) external {
         if(s_hasClaimed[_claimer]) revert NebulaAirdrop_UserAlreadyClaimed();
+        if(_deadline < block.timestamp) revert NebulaAirdrop_ExpireSignature(_deadline, block.timestamp);
 
         //Recover the signer e check against the claimer address.
-        if (!_isValidSignature(_claimer, getMessageHash(_claimer, _amount), _v, _r, _s)) revert NebulaAirdrop__InvalidSignature();
+        if (!_isValidSignature(_claimer, getMessageHash(_claimer, _deadline, s_nonces[_claimer]++, _amount), _v, _r, _s)) revert NebulaAirdrop__InvalidSignature();
 
         //TODO
         //Verify the Merkle Proof calculating the lead node hash
@@ -107,9 +115,19 @@ contract NebulaAirdrop is EIP712{
         *@param _claimer the user to build the type hash for
         *@param _amount the amount of tokens to claim
     */
-    function getMessageHash(address _claimer, uint256 _amount) public view returns (bytes32) {
+    function getMessageHash(
+        address _claimer,
+        uint48 _deadline,
+        uint48 _nonces,
+        uint256 _amount
+    ) public view returns (bytes32) {
         return _hashTypedDataV4(
-            keccak256(abi.encode(MESSAGE_TYPEHASH, AirdropInfo({user: _claimer, amount: _amount})))
+            keccak256(abi.encode(MESSAGE_TYPEHASH, AirdropInfo({
+                user: _claimer,
+                deadline: _deadline,
+                nonces: _nonces,
+                amount: _amount
+            })))
         );
     }
 

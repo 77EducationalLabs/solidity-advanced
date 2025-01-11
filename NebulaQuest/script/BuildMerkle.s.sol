@@ -14,6 +14,11 @@ import {ScriptHelper} from "@murky/script/common/ScriptHelper.sol";
 // 3. The output file will be generated in /script/target/output.json
 
 /** 
+ * @title BuildMerkle
+ * @author Barba
+ * @author 77 Innovation Labs
+ * @notice added documentation and renamed variables for a clear understanding
+ *
  * @title MakeMerkle
  * @author Ciara Nightingale
  * @author Cyfrin

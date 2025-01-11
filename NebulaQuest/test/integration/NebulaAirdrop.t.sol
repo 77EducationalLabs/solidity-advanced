@@ -6,6 +6,13 @@ import { console2 } from "forge-std/Test.sol";
 
 contract NebulaAirdropTest is Helper {
 
+    ///print addresses
+        function test_printAddressToConsole() public view {
+            console2.log(s_user);
+            console2.log(s_user01);
+            console2.log(s_user02);
+            console2.log(s_user03);
+        }
 
     ///User can claim by himself
         function test_userCanClaim() public {
@@ -14,7 +21,6 @@ contract NebulaAirdropTest is Helper {
 
             vm.prank(s_user);
             drop.claimNebulaQuestToken(
-                s_user,
                 AMOUNT,
                 s_proof
             );
@@ -37,7 +43,9 @@ contract NebulaAirdropTest is Helper {
                 bytes32 s
             ) = helperSignMessage(
                 s_userPrivateKey,
-                s_user
+                s_user,
+                s_deadline,
+                s_nonce
             );
 
             vm.prank(s_admin);
@@ -45,6 +53,7 @@ contract NebulaAirdropTest is Helper {
                 s_user,
                 AMOUNT,
                 s_proof,
+                s_deadline,
                 v,
                 r,
                 s
