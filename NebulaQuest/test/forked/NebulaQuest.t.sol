@@ -3,6 +3,7 @@
 pragma solidity 0.8.26;
 
 import {ForkedHelper} from "../helpers/ForkedHelper.t.sol";
+import { console2 } from "forge-std/Test.sol";
 
 contract NebulaQuestForkedTest is ForkedHelper {
 
@@ -77,18 +78,20 @@ contract NebulaQuestForkedTest is ForkedHelper {
             correctAnswers[8] = keccak256(abi.encodePacked("test9"));
             correctAnswers[9] = keccak256(abi.encodePacked("test10"));
 
+            uint256 amountMinted = SCORE_TEN_OF_TEN * (uint256(getChainlinkDataFeed()) * 10**10);
+
             //Should succeed and be approved
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaQuest_ExamPassed(s_user01, examNumber, 1000);
+            emit NebulaQuest_ExamPassed(s_user01, examNumber, SCORE_TEN_OF_TEN);
             quest.submitAnswers(examNumber, correctAnswers);
 
             //Query data
             student = quest.getStudentInfo(s_user01);
 
             //Assertions
-            assertEq(quest.s_studentsScore(s_user01, examNumber), 1000);
-            assertEq(coin.balanceOf(s_user01), SCORE_TEN_OF_TEN);
+            assertEq(quest.s_studentsScore(s_user01, examNumber), SCORE_TEN_OF_TEN);
+            assertEq(coin.balanceOf(s_user01), amountMinted);
             assertEq(nft.balanceOf(s_user01), 1);
             assertEq(nft.ownerOf(0), s_user01);
             assertEq(student.nftId, 0);
@@ -116,7 +119,7 @@ contract NebulaQuestForkedTest is ForkedHelper {
 
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaQuest_ExamPassed(s_user01, firstExam, 1000);
+            emit NebulaQuest_ExamPassed(s_user01, firstExam, SCORE_TEN_OF_TEN);
             quest.submitAnswers(firstExam, firstAnswers);
 
             //Second Submission
@@ -133,20 +136,20 @@ contract NebulaQuestForkedTest is ForkedHelper {
             secondAnswers[8] = keccak256(abi.encodePacked("secondTest9"));
             secondAnswers[9] = keccak256(abi.encodePacked("secondTest10"));
 
+            //First Submission => 20_000 points
+            //Second Submission => 20_000 points
+            //Total = 40_000
+            //EXP_SEVEN = 6_000
+            
             //New NFT data
-            string memory finalURI = helperURI(
-                "Principal Sequence",
-                "https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/PrincipalSequence.png",
-                LEVEL_THREE,
-                EXP_THREE
-            );
+            string memory finalURI = getNameAndImageOfNFT(LEVEL_SEVEN, EXP_SEVEN);
 
             //NFT emitted
             uint256 tokenId = 0;
 
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaEvolution_NFTUpdated(tokenId, finalURI);
+            emit NebulaEvolution_NFTUpdated(tokenId, LEVEL_SEVEN, finalURI);
             quest.submitAnswers(secondExam, secondAnswers);
         }
 

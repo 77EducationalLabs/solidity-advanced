@@ -15,7 +15,7 @@ contract GenerateInput is Script {
     /// array to store the user's addresses
     string[] whitelist = new string[](4);
     /// the path to get the data
-    string private constant  INPUT_PATH = "/script/target/input.json";
+    string private constant  INPUT_PATH = "/script/MerkleTree/target/input.json";
     
     function run() public {
         // Initialize Types

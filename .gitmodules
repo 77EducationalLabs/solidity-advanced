@@ -7,3 +7,9 @@
 [submodule "NebulaQuest/lib/murky"]
 	path = NebulaQuest/lib/murky
 	url = https://github.com/dmfxyz/murky
+[submodule "NebulaQuest/lib/chainlink"]
+	path = NebulaQuest/lib/chainlink
+	url = https://github.com/smartcontractkit/chainlink
+[submodule "NebulaQuest/lib/chainlink-local"]
+	path = NebulaQuest/lib/chainlink-local
+	url = https://github.com/smartcontractkit/chainlink-local

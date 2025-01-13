@@ -8,6 +8,7 @@ contract NebulaAirdropTest is Helper {
 
     ///print addresses
         function test_printAddressToConsole() public view {
+            console2.log(s_admin);
             console2.log(s_user);
             console2.log(s_user01);
             console2.log(s_user02);

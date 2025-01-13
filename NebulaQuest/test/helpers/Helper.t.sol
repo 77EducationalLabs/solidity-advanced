@@ -12,6 +12,10 @@ import { NebulaEvolution } from "../../src/NebulaEvolution.sol";
 import { NebulaAirdrop  } from "../../src/NebulaAirdrop.sol";
 import { NebulaQuestToken } from "../../src/NebulaQuestToken.sol";
 
+//Scripts
+import { DeployInit } from "../../script/DeployInit.s.sol";
+import { HelperConfig } from "../../script/HelperConfig.s.sol";
+
 //Helpers
 import { Strings } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
@@ -20,6 +24,10 @@ abstract contract Helper is Test {
 
     //Type Declarations
     using Strings for uint256;
+
+    //Scripts Instances
+    DeployInit deployQuest;
+    HelperConfig helperConfig;
 
     //Contracts Instances
     NebulaStablecoin stablecoin;
@@ -50,9 +58,11 @@ abstract contract Helper is Test {
     
     //Token Amounts - MAGIC NUMBERS
     uint256 constant AMOUNT_TO_MINT = 10*10**18;
-    uint256 constant SCORE_TEN_OF_TEN = 1000 *10**18;
+    uint256 constant SCORE_TEN_OF_TEN = 1000;
     ///Variable to define de value to be distributed through the airdrop
     uint256 constant AMOUNT = 5 * 1e18;
+    uint256 constant LINK_VALUE = 20*10**18;
+    uint256 constant DECIMALS = 10**18;
 
     //Testing Utils
     uint256 constant LEVEL_ONE = 1;
@@ -85,7 +95,7 @@ abstract contract Helper is Test {
     event NebulaQuest_ExamPassed(address user, uint8 examIndex, uint16 score);
     event NebulaEvolution_LevelUpdated(uint256 level,  uint256 amountOfExp);
     event NebulaEvolution_TheGasIsFreezingABirthIsOnTheWay(uint256 tokenId);
-    event NebulaEvolution_NFTUpdated(uint256 tokenId, string finalURI);
+    event NebulaEvolution_NFTUpdated(uint256 tokenId, uint256 level, string finalURI);
 
     // Errors
     error AccessControlUnauthorizedAccount(address account, bytes32 role);
@@ -98,8 +108,10 @@ abstract contract Helper is Test {
     error NebulaEvolution_InvalidNFTId();
 
     function setUp() external {
+        deployQuest = new DeployInit();
+        (quest, helperConfig)= deployQuest.run();
+
         stablecoin = new NebulaStablecoin("Nebula Stablecoin","NSN", s_admin, s_minter);
-        quest = new NebulaQuest(s_admin);
         evolution = new NebulaEvolution("Nebula Evolution","NET", s_admin, s_minter);
         token = new NebulaQuestToken(s_admin, s_admin);
         drop = new NebulaAirdrop(MERKLE_ROOT, token);
@@ -163,7 +175,6 @@ abstract contract Helper is Test {
     }
 
     function helperURI(string memory _name, string memory _image, uint256 _nftLevel, uint256 _exp) public pure returns(string memory finalURI){
-        
         string memory uri = Base64.encode(
             bytes(
                 string(
@@ -172,9 +183,9 @@ abstract contract Helper is Test {
                         '"description": "Nebula Evolution",',
                         '"image": "', _image, '",'
                         '"attributes": [',
-                            ',{"trait_type": "Level",',
+                            '{"trait_type": "Level",',
                             '"value": ', _nftLevel.toString(),'}',
-                            '{"trait_type": "Exp",',
+                            ',{"trait_type": "Exp",',
                             '"value": ', _exp.toString(),'}',
                         ']}'
                     )

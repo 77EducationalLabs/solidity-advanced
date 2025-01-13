@@ -122,7 +122,7 @@ contract NebulaEvolutionTest is Helper {
             ;
 
             vm.expectEmit();
-            emit NebulaEvolution_NFTUpdated(tokenId, finalURI);
+            emit NebulaEvolution_NFTUpdated(tokenId, LEVEL_TWO, finalURI);
             evolution.updateNFT(0, EXP_TWO);
 
             vm.stopPrank();

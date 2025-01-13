@@ -52,7 +52,7 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
     ///@notice event emitted when a level is updated
     event NebulaEvolution_LevelUpdated(uint256 level,  uint256 amountOfExp);
     ///@notice event emitted when a NFT metadata is updated
-    event NebulaEvolution_NFTUpdated(uint256 tokenId, string finalURI);
+    event NebulaEvolution_NFTUpdated(uint256 tokenId, uint256 level, string finalURI);
 
     /**
         * @notice Constructor to initialize inherited storage variables
@@ -98,7 +98,7 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
         _safeMint(_user, _tokenId);
         _updateNFTMetadata({
             _nftID: _tokenId,
-            _nftLevel: 0,
+            _nftLevel: uint256(ONE),
             _nftExp: 0
         });
     }
@@ -112,17 +112,18 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
     function updateNFT(uint256 _tokenId, uint256 _exp) external payable onlyRole(MINTER_ROLE){
         if(_tokenId > s_tokenId) revert NebulaEvolution_InvalidNFTId();
 
-        uint256 i = 1;
         uint256 nftLevel;
+        uint256 nftExp;
 
-        while(i < TOTAL_LEVELS){
-            if(_exp < s_expPerLevel[i]){
-                nftLevel = i - 1;
+        for (uint256 level = TOTAL_LEVELS; level > ONE; level--) {
+            if (_exp >= s_expPerLevel[level]) {
+                nftLevel = level;
+                nftExp = s_expPerLevel[level];
                 break;
             }
-            ++i;
         }
-        _updateNFTMetadata(_tokenId, nftLevel, _exp);
+
+        _updateNFTMetadata(_tokenId, nftLevel, nftExp);
     }
 
     /**
@@ -167,9 +168,9 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
                         '"description": "Nebula Evolution",',
                         '"image": "', s_starInformation[_nftLevel].image, '",'
                         '"attributes": [',
-                            ',{"trait_type": "Level",',
+                            '{"trait_type": "Level",',
                             '"value": ', _nftLevel.toString(),'}',
-                            '{"trait_type": "Exp",',
+                            ',{"trait_type": "Exp",',
                             '"value": ', _nftExp.toString(),'}',
                         ']}'
                     )
@@ -182,7 +183,7 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
             abi.encodePacked("data:application/json;base64,", uri)
         );
         
-        emit NebulaEvolution_NFTUpdated(_nftID, finalURI);
+        emit NebulaEvolution_NFTUpdated(_nftID, _nftLevel, finalURI);
 
         _setTokenURI(_nftID, finalURI);
     }

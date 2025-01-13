@@ -36,9 +36,9 @@ contract BuildMerkle is Script, ScriptHelper {
     Merkle private m = new Merkle();
 
     //The path to the file holding the input users and amounts stored
-    string private s_inputPath = "/script/target/input.json";
+    string private s_inputPath = "/script/MerkleTree/target/input.json";
     //The path to the output file in which the merkle root will be written to
-    string private s_outputPath = "/script/target/output.json";
+    string private s_outputPath = "/script/MerkleTree/target/output.json";
 
     // get the absolute path 
     string private s_elements = vm.readFile(string.concat(vm.projectRoot(), s_inputPath));

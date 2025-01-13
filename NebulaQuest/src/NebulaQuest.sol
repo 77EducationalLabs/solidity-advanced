@@ -12,6 +12,9 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+///@notice Chainlink Imports
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+
 ///Errors///
 ///@notice error emitted when an user don't answer all questions
 error NebulaQuest_MustAnswerAllQuestions(uint256 numberOfAnswers, uint256 expectedNumberOfAnswers);
@@ -40,6 +43,8 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
     ///@notice immutable variable to store the contract instance
     NebulaStablecoin public immutable i_coin;
     NebulaEvolution public immutable i_nft;
+    ///@notice Chainlink DataFeeds instance to collect LINK price.
+    AggregatorV3Interface public immutable i_feeds;
 
     ///Variables///
     ///@notice the minimum value a user must score to  graduate
@@ -79,13 +84,16 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
     /**
         * @notice constructor function to initialize contract variables and deploy the stablecoin
         * @param _admin Multi-sig wallet
+        * @param _feeds the Chainlink Data Feeds address
         * @dev none of the params should be empty or invalid.
     */
     constructor (
-        address _admin
+        address _admin,
+        address _feeds
     ) Ownable(_admin) {
         i_coin = new NebulaStablecoin("Nebula Stablecoin","NSC", _admin, address(this));
         i_nft = new NebulaEvolution("Nebula Evolution","NEV", _admin, address(this));
+        i_feeds = AggregatorV3Interface(_feeds);
     }
 
     ///external///
@@ -146,7 +154,7 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
         *@param _score the total points the user achieved on the exam
     */
     function _distributeRewards(uint16 _score) private {
-        i_coin.mint(msg.sender, _score * DECIMALS);
+        i_coin.mint(msg.sender, _calculateAmountOfTokens(_score));
 
         uint256 score = i_coin.balanceOf(msg.sender) / DECIMALS;
 
@@ -162,6 +170,32 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
 
             i_nft.updateNFT(nftId, score);
         }
+    }
+
+    /**
+        *@notice private function to calculate the amount ot tokens to mint
+        *@param _points the amount of points scored on the exam
+        *@return _amountToMint the amount of tokens to ben minted
+        *@dev this functions must convert the result into à 18 decimals value.
+        *@dev the `Link/USD` feed return a 8 decimals value.
+    */
+    function _calculateAmountOfTokens(uint256 _points) private view returns(uint256 _amountToMint){
+        _amountToMint = _points * (uint256(_getChainlinkDataFeed()) * 10**10);
+    }
+
+    /**
+        *@notice private function to query Prices Feeds data
+        *@return _feedAnswer the value received from the AggregatorV3 contract
+        *@dev the _feedAnswer has 8 decimals for this feed.
+    */
+    function _getChainlinkDataFeed() private  view returns(int _feedAnswer) {
+        (
+            /* uint80 roundID */,
+            _feedAnswer,
+            /*uint startedAt*/,
+            /*uint timeStamp*/,
+            /*uint80 answeredInRound*/
+        ) = i_feeds.latestRoundData();
     }
 
     ///view & pure///

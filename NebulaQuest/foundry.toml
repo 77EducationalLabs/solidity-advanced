@@ -8,5 +8,7 @@ fs_permissions = [{ access = "read-write", path = "./"}]
 
 remappings = [
                 "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-                "@murky/=lib/murky/"
+                "@murky/=lib/murky/",
+                "@chainlink/contracts/=lib/chainlink/contracts/",
+                "@local/src/=lib/chainlink-local/src/"
 ]

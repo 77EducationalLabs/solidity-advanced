@@ -15,6 +15,10 @@ import {Strings} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URI
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
+//Chainlink contracts
+///@notice Chainlink Imports
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+
 abstract contract ForkedHelper is Test {
 
     //Fork Utils
@@ -24,6 +28,7 @@ abstract contract ForkedHelper is Test {
     //Type Declarations
     using Strings for uint256;
 
+    //Struct Instances
     NebulaQuest.Student student;
 
     //Contracts Instances
@@ -47,7 +52,8 @@ abstract contract ForkedHelper is Test {
     
     //Token Amounts
     uint256 constant AMOUNT_TO_MINT = 10*10**18;
-    uint256 constant SCORE_TEN_OF_TEN = 1000 *10**18;
+    uint16 constant SCORE_TEN_OF_TEN = 1000;
+    address constant POL_DATA_FEED = 0xc2e2848e28B9fE430Ab44F55a8437a33802a219C;
 
     //Testing Utils
     uint256 constant LEVEL_ONE = 1;
@@ -64,6 +70,7 @@ abstract contract ForkedHelper is Test {
     uint256 constant EXP_FIVE = 4000;
     uint256 constant EXP_SIX = 5000;
     uint256 constant EXP_SEVEN = 6000;
+    uint256 constant DECIMALS = 10**18;
 
     //Events
     event NebulaStablecoin_TokenMinted(address _to, uint256 _amount);
@@ -73,7 +80,7 @@ abstract contract ForkedHelper is Test {
     event NebulaQuest_ExamPassed(address user, uint8 examIndex, uint16 score);
     event NebulaEvolution_LevelUpdated(uint256 level,  uint256 amountOfExp);
     event NebulaEvolution_TheGasIsFreezingABirthIsOnTheWay(uint256 tokenId);
-    event NebulaEvolution_NFTUpdated(uint256 tokenId, string finalURI);
+    event NebulaEvolution_NFTUpdated(uint256 tokenId, uint256 level, string finalURI);
 
     // Errors
     error AccessControlUnauthorizedAccount(address account, bytes32 role);
@@ -87,7 +94,7 @@ abstract contract ForkedHelper is Test {
     function setUp() external {
         polygonFork = vm.createFork(POL_RPC);
         vm.selectFork(polygonFork);
-        quest = new NebulaQuest(s_admin);
+        quest = new NebulaQuest(s_admin, POL_DATA_FEED);
         coin = quest.i_coin();
         nft = quest.i_nft();
 
@@ -152,9 +159,9 @@ abstract contract ForkedHelper is Test {
                         '"description": "Nebula Evolution",',
                         '"image": "', _image, '",'
                         '"attributes": [',
-                            ',{"trait_type": "Level",',
+                            '{"trait_type": "Level",',
                             '"value": ', _nftLevel.toString(),'}',
-                            '{"trait_type": "Exp",',
+                            ',{"trait_type": "Exp",',
                             '"value": ', _exp.toString(),'}',
                         ']}'
                     )
@@ -191,5 +198,73 @@ abstract contract ForkedHelper is Test {
 
     function interfaceReturnsTrue() public view returns(bool isInterface){
         isInterface = nft.supportsInterface(IERC721Receiver.onERC721Received.selector);
+    }
+
+    /**
+        *@notice private function to query Prices Feeds data
+        *@return _feedAnswer the value received from the AggregatorV3 contract
+        *@dev the _feedAnswer has 8 decimals for this feed.
+    */
+    function getChainlinkDataFeed() public  view returns(int _feedAnswer) {
+        (
+            /* uint80 roundID */,
+            _feedAnswer,
+            /*uint startedAt*/,
+            /*uint timeStamp*/,
+            /*uint80 answeredInRound*/
+        ) = AggregatorV3Interface(POL_DATA_FEED).latestRoundData();
+    }
+
+    function getNameAndImageOfNFT(uint256 _level, uint256 _exp) public pure returns(string memory star_){
+        if(_level == LEVEL_ONE){
+            star_ = helperURI(
+                "Stelar Dust",
+                "https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/StelarDust.png",
+                LEVEL_ONE,
+                _exp
+            );
+        } else if( _level == LEVEL_TWO) {
+            star_ = helperURI(
+                "Protostar",
+                "https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/Protostar.png",
+                LEVEL_TWO,
+                _exp
+            );
+        } else if (_level == LEVEL_THREE) {
+            star_ = helperURI(
+                "Principal Sequence",
+                "https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/PrincipalSequence.png",
+                LEVEL_THREE,
+                _exp
+            );
+        } else if (_level == LEVEL_FOUR) {
+            star_ = helperURI(
+                "Red Giant",
+                "https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/RedGiant.png",
+                LEVEL_FOUR,
+                _exp
+            );
+        } else if (_level == LEVEL_FIVE) {
+            star_ = helperURI(
+                "White Dwarf",
+                "https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/WhiteDwarf.png",
+                LEVEL_FIVE,
+                _exp
+            );
+        } else if (_level == LEVEL_SIX) {
+            star_ = helperURI(
+                "Supernova",
+                "https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/Supernova.png",
+                LEVEL_SIX,
+                _exp
+            );
+        } else if (_level == LEVEL_SEVEN) {
+            star_ = helperURI(
+                "BlackHole",
+                "https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/Black%20Hole.png",
+                LEVEL_SEVEN,
+                _exp
+            );
+        }
     }
 }

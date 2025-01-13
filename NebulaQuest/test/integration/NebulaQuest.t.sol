@@ -22,13 +22,15 @@ contract NebulaQuest is Helper {
             correctAnswers[8] = keccak256(abi.encodePacked("test9"));
             correctAnswers[9] = keccak256(abi.encodePacked("test10"));
 
+            
+
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaStablecoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
+            emit NebulaStablecoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN * LINK_VALUE);
             quest.submitAnswers(examNumber, correctAnswers);
 
             uint256 user01Balance = coin.balanceOf(s_user01);
-            assertEq(user01Balance, SCORE_TEN_OF_TEN);
+            assertEq(user01Balance, SCORE_TEN_OF_TEN * LINK_VALUE);
         }
 
     //Burning Stablecoins
@@ -49,12 +51,12 @@ contract NebulaQuest is Helper {
 
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaStablecoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
+            emit NebulaStablecoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN * LINK_VALUE);
             quest.submitAnswers(examNumber, correctAnswers);
 
             vm.prank(s_user01);
             vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, s_user01, MINTER_ROLE));
-            coin.burn(SCORE_TEN_OF_TEN);
+            coin.burn(SCORE_TEN_OF_TEN * LINK_VALUE);
         }
     
     //Emitting NFT and Updating Storage
@@ -73,13 +75,15 @@ contract NebulaQuest is Helper {
             correctAnswers[8] = keccak256(abi.encodePacked("test9"));
             correctAnswers[9] = keccak256(abi.encodePacked("test10"));
 
+            uint256 stablecoinBalance = SCORE_TEN_OF_TEN * LINK_VALUE;
+
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaStablecoin_TokenMinted(s_user01, SCORE_TEN_OF_TEN);
+            emit NebulaStablecoin_TokenMinted(s_user01, stablecoinBalance);
             quest.submitAnswers(examNumber, correctAnswers);
 
             uint256 user01Balance = coin.balanceOf(s_user01);
-            assertEq(user01Balance, SCORE_TEN_OF_TEN);
+            assertEq(user01Balance, stablecoinBalance);
 
             uint256 user01NFT = nft.balanceOf(s_user01);
             assertEq(user01NFT, 1);
@@ -119,13 +123,15 @@ contract NebulaQuest is Helper {
 
             vm.startPrank(s_user01);
             quest.submitAnswers(firstExam, firstAnswers);
+            uint256 balanceAfterFirstExam = coin.balanceOf(s_user01);
+            assertEq(balanceAfterFirstExam, SCORE_TEN_OF_TEN * LINK_VALUE);
 
             quest.submitAnswers(secondExam, secondAnswers);
 
             vm.stopPrank();
 
             uint256 user01Balance = coin.balanceOf(s_user01);
-            assertEq(user01Balance, 2000*10**18);
+            assertEq(user01Balance, (SCORE_TEN_OF_TEN * 2) * LINK_VALUE);
 
             uint256 user01NFT = nft.balanceOf(s_user01);
             assertEq(user01NFT, 1);
