@@ -187,5 +187,10 @@ contract NebulaEvolution is ERC721, ERC721URIStorage, AccessControl {
 
         _setTokenURI(_nftID, finalURI);
     }
+
+    /// View & Pure ///
+    function getLastNFTId() external view returns(uint256 nftId_){
+        nftId_ = s_tokenId;
+    }
 }
 

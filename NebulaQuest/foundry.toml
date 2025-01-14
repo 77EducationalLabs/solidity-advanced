@@ -10,5 +10,6 @@ remappings = [
                 "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
                 "@murky/=lib/murky/",
                 "@chainlink/contracts/=lib/chainlink/contracts/",
-                "@local/src/=lib/chainlink-local/src/"
+                "@local/src/=lib/chainlink-local/src/",
+                "@cyfrin/src/=lib/foundry-devops/src/"
 ]

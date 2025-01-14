@@ -13,3 +13,6 @@
 [submodule "NebulaQuest/lib/chainlink-local"]
 	path = NebulaQuest/lib/chainlink-local
 	url = https://github.com/smartcontractkit/chainlink-local
+[submodule "NebulaQuest/lib/foundry-devops"]
+	path = NebulaQuest/lib/foundry-devops
+	url = https://github.com/Cyfrin/foundry-devops
