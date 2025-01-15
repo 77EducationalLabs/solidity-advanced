@@ -16,3 +16,6 @@
 [submodule "NebulaQuest/lib/foundry-devops"]
 	path = NebulaQuest/lib/foundry-devops
 	url = https://github.com/Cyfrin/foundry-devops
+[submodule "Upgradeable/lib/forge-std"]
+	path = Upgradeable/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
