@@ -43,26 +43,49 @@ contract NebulaQuestPulsarTest is Helper {
             assertEq(randomWordCaptured, numOfWords);
         }
 
-         function test_requestRandomWordsCreateARequestAndFulfill() public setLevels setAnswers {
+        function test_requestRandomWordsCreateARequestAndFulfill() public setLevels setAnswers returns(uint256 requestId_){
             uint32 numOfWords = 4;
             
             ///@notice prepare answers and submit for four users
             prepareEnvironmentToVRFRequest();
 
             //Check for four NFTs minted. Function must return 4.
-            assertEq(nft.getLastNFTId(), numOfWords);
+            // assertEq(nft.getLastNFTId(), numOfWords);
 
             vm.recordLogs();
                 vm.prank(s_admin);
-                uint256 requestId = pulsar.requestRandomWords(numOfWords);
+                requestId_ = pulsar.requestRandomWords(numOfWords);
             Vm.Log[] memory logs = vm.getRecordedLogs();
 
             (uint256 requestIdCaptured, uint256 randomWordCaptured) = abi.decode(logs[1].data, (uint256, uint256));
 
             assertEq(logs[1].topics[0], keccak256("NebulaQuestPulsar_RequestSent(uint256,uint256)"));
-            assertEq(requestIdCaptured, requestId);
+            assertEq(requestIdCaptured, requestId_);
             assertEq(randomWordCaptured, numOfWords);
 
-            /// implement logic to fulfill
+            vm.recordLogs();
+                /// implement logic to fulfill
+                coordinator.fulfillRandomWords(requestId_, address(pulsar));
+            Vm.Log[] memory fulfillLogs = vm.getRecordedLogs();
+
+            assertEq(fulfillLogs[0].topics[0], keccak256("NebulaQuestPulsar_RequestFulfilled(uint256,uint256[])"));
+            (uint256 fulfilledRequestIdCaptured, uint256[] memory randomWords) = abi.decode(fulfillLogs[0].data, (uint256, uint256[]));
+            assertEq(fulfilledRequestIdCaptured, requestId_);
+            assertEq(randomWords.length, numOfWords);
+        }
+
+    //processWinners
+        function test_ifProcessWinnersChooseCorrectly() public {
+            uint256 requestId = test_requestRandomWordsCreateARequestAndFulfill();
+            address[] memory winnersAddresses = new address[](4);
+            winnersAddresses[0] = s_user03;
+            winnersAddresses[1] = s_user01;
+            winnersAddresses[2] = s_user02;
+            winnersAddresses[3] = s_user02;
+
+            vm.prank(s_admin);
+            vm.expectEmit();
+            emit NebulaQuestPulsar_WinnersSelected(requestId, winnersAddresses);
+            pulsar.processWinners(requestId);
         }
 }

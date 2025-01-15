@@ -31,7 +31,7 @@ contract NebulaQuestPulsar is VRFConsumerBaseV2Plus{
     NebulaEvolution immutable i_evolution;
 
     ///@notice constant variable to store the cost to store each random word
-    uint32 constant COST_BY_WORD = 20_000;
+    uint32 constant COST_BY_WORD = 100_000;
     ///@notice constant variable to store the number of confirmations
     uint16 constant NUM_CONFIRMATIONS = 3; //@audit
 

@@ -2,7 +2,7 @@
 pragma solidity 0.8.26;
 
 ///Foundry Scripts
-import {Script} from "forge-std/Script.sol";
+import {Script, console} from "forge-std/Script.sol";
 
 ///Protocol Contracts
 import {NebulaQuest} from "../src/NebulaQuest.sol";
@@ -22,7 +22,6 @@ contract DeployInit is Script {
         helperConfig = new HelperConfig();
         ///@notice Deploys a VRFAddConsumer helper
         VRFAddConsumer consumer = new VRFAddConsumer();
-
         ///@notice gets the struct data for the chain being used
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
 
@@ -43,6 +42,17 @@ contract DeployInit is Script {
 
             ///@notice update the helperConfig info for the particular chain with the data recently created.
             helperConfig.setConfig(block.chainid, config);
+        } else {
+            console.log("Adding funds to Subscription");
+            ///@notice deploys a new funding script
+            VRFFundSubscription fund = new VRFFundSubscription();
+            ///@notice fund the recently created subscription
+            fund.fundSubscription(
+                config.vrfCoordinator,
+                config.subId,
+                config.link,
+                config.admin
+            );
         }
 
         vm.startBroadcast(config.deployer);

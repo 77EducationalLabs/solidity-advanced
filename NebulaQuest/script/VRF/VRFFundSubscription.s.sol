@@ -13,7 +13,7 @@ import { VRFCoordinatorV2_5Mock } from "@chainlink/contracts/src/v0.8/vrf/mocks/
 import { LinkToken } from "@chainlink/contracts/src/v0.8/shared/token/ERC677/LinkToken.sol";
 
 contract VRFFundSubscription is Script {
-    uint96 public constant INITIAL_LINK_AMOUNT = 3*10**18;
+    uint96 public constant INITIAL_LINK_AMOUNT = 100*10**18;
     uint256 public constant LOCAL_CHAIN_ID = 31337;
 
     /**
@@ -56,6 +56,7 @@ contract VRFFundSubscription is Script {
         console.log("Funding subscription: ", subId);
         console.log("Using vrfCoordinator: ", vrfCoordinatorV2_5);
         console.log("On ChainID: ", block.chainid);
+        
         ///@notice checks if the chain is a local anvil chain
         if (block.chainid == LOCAL_CHAIN_ID) {
             ///@notice start broadcasting the account

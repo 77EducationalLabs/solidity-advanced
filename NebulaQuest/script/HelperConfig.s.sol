@@ -15,9 +15,9 @@ contract HelperConfig is Script {
     //////////////////////////////////////////////////////////////*/
     uint8 public constant DECIMALS = 8;
     int256 public constant INITIAL_ANSWER = 20*10**8;
-    uint96 public constant MOCK_BASE_FEE = 25*10**16; //0.25 ether
+    uint96 public constant MOCK_BASE_FEE = 5*10**16; //0.05 ether
     uint96 public constant MOCK_GAS_PRICE = 1*10**9; //1 gwei
-    int256 public constant MOCK_WEI_PER_UNIT_LINK = 4*10**15;
+    int256 public constant MOCK_WEI_PER_UNIT_LINK = 1*10**15;
 
     ///@notice it is the result of s_admin = makeAddress("s_admin"); on test file
     address public constant ADMIN = 0x18eC188C111868ed5eE6297dC4e92371BA68D468;
@@ -115,7 +115,7 @@ contract HelperConfig is Script {
             dataFeedsAggregator: address(feeds),
             link: address(0)/*link*/,
             subId: subId,
-            keyHash: 0x0,
+            keyHash: 0,
             vrfCoordinator: address(vrf)
         });
 

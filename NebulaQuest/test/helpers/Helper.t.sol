@@ -20,6 +20,7 @@ import { HelperConfig } from "../../script/HelperConfig.s.sol";
 //Helpers
 import { Strings } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
+import { VRFCoordinatorV2_5Mock } from "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 
 abstract contract Helper is Test {
 
@@ -37,6 +38,9 @@ abstract contract Helper is Test {
         NebulaAirdrop drop;
         NebulaQuestToken token;
         NebulaQuestPulsar pulsar;
+    
+    //Mocks
+    VRFCoordinatorV2_5Mock coordinator;
 
     //NebulaQuest variables
         NebulaStablecoin coin;
@@ -83,6 +87,7 @@ abstract contract Helper is Test {
 
     //Merkle Stuff
         bytes32 constant MERKLE_ROOT = 0x864afd4c7895ba9b3dfaafecef38453e7ccac35762c169051c99ed3412f19362;
+    
     //The proofs for the "first branch" of the tree
         bytes32 constant PROOF_ONE = 0x80f2a786286ac1b15e44029c244b0148c6e5140530d0b48c678235945822c1f6; //l8
         bytes32 constant PROOF_TWO = 0x443568f55ac26d0b2805f40148bc2a7bc63847a4e84bcf6e3154b239463f9e13; //l9
@@ -97,6 +102,8 @@ abstract contract Helper is Test {
         event NebulaEvolution_LevelUpdated(uint256 level,  uint256 amountOfExp);
         event NebulaEvolution_TheGasIsFreezingABirthIsOnTheWay(uint256 tokenId);
         event NebulaEvolution_NFTUpdated(uint256 tokenId, uint256 level, string finalURI);
+        event NebulaQuestPulsar_RequestFulfilled(uint256 requestId, uint256[] randomWords);
+        event NebulaQuestPulsar_WinnersSelected(uint256 requestId, address[] winnerAddresses);
 
     // Errors
         error AccessControlUnauthorizedAccount(address account, bytes32 role);
@@ -127,6 +134,7 @@ abstract contract Helper is Test {
             nft = quest.i_nft();
             ADMIN_ROLE = stablecoin.DEFAULT_ADMIN_ROLE();
             MINTER_ROLE = stablecoin.MINTER_ROLE();
+            coordinator = VRFCoordinatorV2_5Mock(helperConfig.getConfig().vrfCoordinator);
             
             //Grant minting powers to NebulaAirdrop
             vm.prank(s_admin);
