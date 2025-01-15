@@ -16,14 +16,14 @@ contract NebulaQuestPulsarTest is Helper {
             pulsar.requestRandomWords(numWords);
         }
 
-        function test_requestRandomWordsCreateARequest() public setLevels setAnswers {
-            uint32 numOfWords = 4;
+        function test_requestRandomWordsCreateARequest() public setLevels setAnswers returns(uint256 requestId_, uint32 numOfWords_){
+            numOfWords_ = 4;
             
             ///@notice prepare answers and submit for four users
             prepareEnvironmentToVRFRequest();
 
             //Check for four NFTs minted. Function must return 4.
-            assertEq(nft.getLastNFTId(), numOfWords);
+            assertEq(nft.getLastNFTId(), numOfWords_);
             //But, why four is the last token is 3?
             //That's because we start in zero and update the Id, so next nft will have a higher id
             //That's an expected behavior. But is it right?
@@ -33,35 +33,19 @@ contract NebulaQuestPulsarTest is Helper {
 
             vm.recordLogs();
                 vm.prank(s_admin);
-                uint256 requestId = pulsar.requestRandomWords(numOfWords);
-            Vm.Log[] memory logs = vm.getRecordedLogs();
-
-            (uint256 requestIdCaptured, uint256 randomWordCaptured) = abi.decode(logs[1].data, (uint256, uint256));
-
-            assertEq(logs[1].topics[0], keccak256("NebulaQuestPulsar_RequestSent(uint256,uint256)"));
-            assertEq(requestIdCaptured, requestId);
-            assertEq(randomWordCaptured, numOfWords);
-        }
-
-        function test_requestRandomWordsCreateARequestAndFulfill() public setLevels setAnswers returns(uint256 requestId_){
-            uint32 numOfWords = 4;
-            
-            ///@notice prepare answers and submit for four users
-            prepareEnvironmentToVRFRequest();
-
-            //Check for four NFTs minted. Function must return 4.
-            // assertEq(nft.getLastNFTId(), numOfWords);
-
-            vm.recordLogs();
-                vm.prank(s_admin);
-                requestId_ = pulsar.requestRandomWords(numOfWords);
+                requestId_ = pulsar.requestRandomWords(numOfWords_);
             Vm.Log[] memory logs = vm.getRecordedLogs();
 
             (uint256 requestIdCaptured, uint256 randomWordCaptured) = abi.decode(logs[1].data, (uint256, uint256));
 
             assertEq(logs[1].topics[0], keccak256("NebulaQuestPulsar_RequestSent(uint256,uint256)"));
             assertEq(requestIdCaptured, requestId_);
-            assertEq(randomWordCaptured, numOfWords);
+            assertEq(randomWordCaptured, numOfWords_);
+        }
+
+        function test_requestRandomWordsCreateARequestAndFulfill() public returns(uint256 requestId_){
+            uint32 numOfWords;
+            (requestId_, numOfWords) = test_requestRandomWordsCreateARequest();
 
             vm.recordLogs();
                 /// implement logic to fulfill
