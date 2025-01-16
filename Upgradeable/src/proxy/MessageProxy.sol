@@ -14,4 +14,8 @@ contract MessageProxy is TransparentUpgradeableProxy, MessageStorage{
         address _initialOwner,
         bytes memory _data
     ) TransparentUpgradeableProxy(_logic, _initialOwner, _data){}
+
+    function getAdmin() external view returns(address admin_){
+        admin_ = _proxyAdmin();
+    }
 }

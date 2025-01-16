@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.26;
 
 import { Script, console } from "forge-std/Script.sol";
 
@@ -23,6 +23,12 @@ contract DeployInit is Script {
             config.admin,
             config.data
         );
+
+        config.proxyAdmin = proxy_.getAdmin();
+        config.proxy = address(proxy_);
+        config.implementation = address(message_);
+
+        helperConfig_.setConfig(block.chainid, config);
 
         vm.stopBroadcast();
     }

@@ -1,9 +1,8 @@
 ///SPDX-License_Identifier: MIT
 pragma solidity 0.8.26;
 
-///Protocol Contracts
 import { MessageStorage } from "./storage/MessageStorage.sol";
-///Open Zeppelin Imports
+
 import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 /**
@@ -12,10 +11,11 @@ import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable
 	*@dev Passe informações sobre caracteristicas peculiares do seu contrato para outros Devs
     *@author Seu nome.
 */
-contract Message is MessageStorage, Initializable {
+contract SecondMessage is MessageStorage, Initializable{
 	
     /// Events ///
 	event Message_UpdatedMessage();
+	event Message_MessageDeleted();
 		
     /// Functions ///
 	constructor() {
@@ -31,7 +31,13 @@ contract Message is MessageStorage, Initializable {
 			
 		emit Message_UpdatedMessage();
 	}
-		
+
+	function deleteMessage() public {
+		s_message = "";
+
+		emit Message_MessageDeleted();
+	}
+
 	function getMessage() public view returns(string memory _message){
 		_message = s_message;
 	}

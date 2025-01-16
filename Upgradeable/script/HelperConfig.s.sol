@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.26;
 
 import {Script, console2} from "forge-std/Script.sol";
 
@@ -10,7 +10,9 @@ contract HelperConfig is Script{
     //////////////////////////////////////////////////////////////*/
     struct NetworkConfig{
         address admin;
+        address proxyAdmin;
         address implementation;
+        address proxy;
         bytes data;
     }
 
@@ -34,9 +36,14 @@ contract HelperConfig is Script{
         config_ = getConfigByChain(block.chainid);
     }
 
+    function setConfig(uint256 _chainId, NetworkConfig memory _config) public {
+        s_networkConfigStorage[_chainId] = _config;
+        console2.log("Network Config Updated!!");
+    }
+
     function getConfigByChain(uint256 chainId) public returns(NetworkConfig memory){
 
-        if (s_networkConfigStorage[chainId].admin != address(0)) {
+        if (s_networkConfigStorage[chainId].proxy != address(0)) {
             //returns the live chain address
             return s_networkConfigStorage[chainId];
             //ensure that is the local environment
@@ -60,7 +67,9 @@ contract HelperConfig is Script{
 
         s_networkConfig = NetworkConfig({
             admin: ADMIN,
+            proxyAdmin: address(0),
             implementation: address(0),
+            proxy: address(0),
             data: abi.encodeWithSignature("initialize(string)", INITIAL_MESSAGE)
         });
 
