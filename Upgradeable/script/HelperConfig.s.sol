@@ -38,7 +38,6 @@ contract HelperConfig is Script{
 
     function setConfig(uint256 _chainId, NetworkConfig memory _config) public {
         s_networkConfigStorage[_chainId] = _config;
-        console2.log("Network Config Updated!!");
     }
 
     function getConfigByChain(uint256 chainId) public returns(NetworkConfig memory){
@@ -58,12 +57,9 @@ contract HelperConfig is Script{
 
     function _getOrCreateAnvilEthConfig() private returns(NetworkConfig memory){
         // Check to see if we set an active network config
-        if (s_networkConfig.admin != address(0)) {
+        if (s_networkConfig.proxy != address(0)) {
             return s_networkConfig;
         }
-
-        console2.log(unicode"⚠️ Mock contract Deployed");
-        console2.log("It should've happened?");
 
         s_networkConfig = NetworkConfig({
             admin: ADMIN,

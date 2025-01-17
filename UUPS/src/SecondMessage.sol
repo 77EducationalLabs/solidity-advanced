@@ -14,6 +14,8 @@ contract SecondMessage is UUPSUpgradeable{
 
 	/// State Variables ///
 	string public s_message;
+    uint256[50] __gap;
+
 	
     /// Events ///
 	event Message_UpdatedMessage();
