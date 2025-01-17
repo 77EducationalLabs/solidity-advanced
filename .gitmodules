@@ -22,3 +22,6 @@
 [submodule "Upgradeable/lib/openzeppelin-contracts"]
 	path = Upgradeable/lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "UUPS/lib/forge-std"]
+	path = UUPS/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
