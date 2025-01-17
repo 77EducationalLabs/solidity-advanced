@@ -25,3 +25,12 @@
 [submodule "UUPS/lib/forge-std"]
 	path = UUPS/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "UUPS/lib/openzeppelin-contracts-upgradeable"]
+	path = UUPS/lib/openzeppelin-contracts-upgradeable
+	url = https://github.com/openzeppelin/openzeppelin-contracts-upgradeable
+[submodule "UUPS/lib/openzeppelin-contracts"]
+	path = UUPS/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "UUPS/lib/foundry-devops"]
+	path = UUPS/lib/foundry-devops
+	url = https://github.com/Cyfrin/foundry-devops
