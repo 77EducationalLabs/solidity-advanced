@@ -7,22 +7,22 @@ import {Helper} from "../helpers/Helper.t.sol";
 contract NebulaEvolutionTest is Helper {
     
     ///Checking Evolution Levels
-        function test_levelAreSetAsExpected() public setLevels{
-            assertEq(evolution.s_expPerLevel(LEVEL_ONE), EXP_ONE);
-            assertEq(evolution.s_expPerLevel(LEVEL_TWO), EXP_TWO);
-            assertEq(evolution.s_expPerLevel(LEVEL_THREE), EXP_THREE);
-            assertEq(evolution.s_expPerLevel(LEVEL_FOUR), EXP_FOUR);
-            assertEq(evolution.s_expPerLevel(LEVEL_FIVE), EXP_FIVE);
-            assertEq(evolution.s_expPerLevel(LEVEL_SIX), EXP_SIX);
-            assertEq(evolution.s_expPerLevel(LEVEL_SEVEN), EXP_SEVEN);
+        function test_levelAreSetAsExpected() public setLevels(s_admin){
+            assertEq(nft.s_expPerLevel(LEVEL_ONE), EXP_ONE);
+            assertEq(nft.s_expPerLevel(LEVEL_TWO), EXP_TWO);
+            assertEq(nft.s_expPerLevel(LEVEL_THREE), EXP_THREE);
+            assertEq(nft.s_expPerLevel(LEVEL_FOUR), EXP_FOUR);
+            assertEq(nft.s_expPerLevel(LEVEL_FIVE), EXP_FIVE);
+            assertEq(nft.s_expPerLevel(LEVEL_SIX), EXP_SIX);
+            assertEq(nft.s_expPerLevel(LEVEL_SEVEN), EXP_SEVEN);
         }
 
         function test_NameIsDefinedCorrectly() public view{
-            (string memory nameOne, string memory imageOne) = evolution.s_starInformation(LEVEL_ONE);
+            (string memory nameOne, string memory imageOne) = nft.s_starInformation(LEVEL_ONE);
             assertEq(keccak256(abi.encodePacked(nameOne)), keccak256(abi.encodePacked("Stelar Dust")));
             assertEq(keccak256(abi.encodePacked(imageOne)), keccak256(abi.encodePacked("https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/StelarDust.png")));
 
-            (string memory nameTwo, string memory imageTwo) = evolution.s_starInformation(LEVEL_TWO);
+            (string memory nameTwo, string memory imageTwo) = nft.s_starInformation(LEVEL_TWO);
             assertEq(keccak256(abi.encodePacked(nameTwo)), keccak256(abi.encodePacked("Protostar")));
             assertEq(keccak256(abi.encodePacked(imageTwo)), keccak256(abi.encodePacked("https://bafybeihdkzwuyfhjicomsyuwz2dmdqxhsp2dm3a5p6jootg6dymlb6hju4.ipfs.nftstorage.link/Protostar.png")));
 
@@ -32,7 +32,7 @@ contract NebulaEvolutionTest is Helper {
         function test_levelSetterRevertBecauseRole() public {
             
             vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, address(this), ADMIN_ROLE));
-            evolution.levelsSetter(LEVEL_ONE, 0);
+            nft.levelsSetter(LEVEL_ONE, 0);
         }
 
         function test_levelSetterRevertBecauseOfWrongLevel() public {
@@ -41,77 +41,77 @@ contract NebulaEvolutionTest is Helper {
 
             vm.prank(s_admin);
             vm.expectRevert(abi.encodeWithSelector(NebulaEvolution_ThereAreOnlySevenLevels.selector, tooHighLevel));
-            evolution.levelsSetter(tooHighLevel, randomEXP);
+            nft.levelsSetter(tooHighLevel, randomEXP);
         }
 
         function test_levelSetterUpdateState() public {
             vm.startPrank(s_admin);
             vm.expectEmit();
             emit NebulaEvolution_LevelUpdated(LEVEL_ONE, EXP_ONE);
-            evolution.levelsSetter(LEVEL_ONE, EXP_ONE);
-            evolution.levelsSetter(LEVEL_TWO, EXP_TWO);
+            nft.levelsSetter(LEVEL_ONE, EXP_ONE);
+            nft.levelsSetter(LEVEL_TWO, EXP_TWO);
             vm.stopPrank();
 
-            assertEq(evolution.s_expPerLevel(LEVEL_ONE), EXP_ONE);
-            assertEq(evolution.s_expPerLevel(LEVEL_TWO), EXP_TWO);
+            assertEq(nft.s_expPerLevel(LEVEL_ONE), EXP_ONE);
+            assertEq(nft.s_expPerLevel(LEVEL_TWO), EXP_TWO);
         }
     
     /// safeMint
-        function test_safeMintRevertsBecauseOfRole() public setLevels{
+        function test_safeMintRevertsBecauseOfRole() public setLevels(s_admin){
             
             vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, address(this), MINTER_ROLE));
-            evolution.safeMint(s_user01);
+            nft.safeMint(s_user01);
         }
 
-        function test_safeMintSucceed() public setLevels{
+        function test_safeMintSucceed() public setLevels(s_admin){
             uint256 tokenId = 0;
             
-            vm.prank(s_minter);
+            vm.prank(address(quest));
             vm.expectEmit();
             emit NebulaEvolution_TheGasIsFreezingABirthIsOnTheWay(tokenId);
-            evolution.safeMint(s_user01);
+            nft.safeMint(s_user01);
 
-            assertEq(evolution.balanceOf(s_user01), 1);
-            string memory tokenURI = evolution.tokenURI(tokenId);
+            assertEq(nft.balanceOf(s_user01), 1);
+            string memory tokenURI = nft.tokenURI(tokenId);
             assertTrue(keccak256(abi.encodePacked(tokenURI)).length != 0);
         }
 
         function test_safeMintRevertBecauseMultipleTokens() public {
 
-            vm.startPrank(s_minter);
-            evolution.safeMint(s_user01);
+            vm.startPrank(address(quest));
+            nft.safeMint(s_user01);
 
-            assertEq(evolution.balanceOf(s_user01), 1);
+            assertEq(nft.balanceOf(s_user01), 1);
 
             vm.expectRevert(abi.encodeWithSelector(NebulaEvolution_AlreadyHasAnNFT.selector));
-            evolution.safeMint(s_user01);
+            nft.safeMint(s_user01);
 
             vm.stopPrank();
         }
 
     /// updateNFT
-        function test_updateNFTRevertBecauseOfRole() public setLevels{
-            vm.prank(s_minter);
-            evolution.safeMint(s_user01);
+        function test_updateNFTRevertBecauseOfRole() public setLevels(s_admin){
+            vm.prank(address(quest));
+            nft.safeMint(s_user01);
 
             vm.expectRevert(abi.encodeWithSelector(AccessControlUnauthorizedAccount.selector, address(this), MINTER_ROLE));
-            evolution.updateNFT(0, EXP_TWO);
+            nft.updateNFT(0, EXP_TWO);
         }
 
-        function test_updateNFTRevertBecauseID() public setLevels{
+        function test_updateNFTRevertBecauseID() public setLevels(s_admin){
             uint256 tokenId = 10;
 
-            vm.startPrank(s_minter);
+            vm.startPrank(address(quest));
             vm.expectRevert(abi.encodeWithSelector(NebulaEvolution_InvalidNFTId.selector));
-            evolution.updateNFT(tokenId, EXP_TWO);
+            nft.updateNFT(tokenId, EXP_TWO);
         }
     
-        function test_updateNFTSucceed() public setLevels{
+        function test_updateNFTSucceed() public setLevels(s_admin){
             uint256 tokenId = 0;
 
             //mint token
-            vm.startPrank(s_minter);
-            evolution.safeMint(s_user01);
+            vm.startPrank(address(quest));
+            nft.safeMint(s_user01);
 
             //generate new uri
             string memory finalURI = helperURI(
@@ -123,10 +123,8 @@ contract NebulaEvolutionTest is Helper {
 
             vm.expectEmit();
             emit NebulaEvolution_NFTUpdated(tokenId, LEVEL_TWO, finalURI);
-            evolution.updateNFT(0, EXP_TWO);
+            nft.updateNFT(0, EXP_TWO);
 
             vm.stopPrank();
         }
-
-
 }

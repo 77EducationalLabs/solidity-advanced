@@ -33,7 +33,7 @@ contract NebulaQuestPulsar is VRFConsumerBaseV2Plus{
     ///@notice constant variable to store the cost to store each random word
     uint32 constant COST_BY_WORD = 100_000;
     ///@notice constant variable to store the number of confirmations
-    uint16 constant NUM_CONFIRMATIONS = 3; //@audit
+    uint16 constant NUM_CONFIRMATIONS = 3; //@audit - UPDATE ACCORDINGLY TO THE NETWORK USED
 
     ///@notice mapping to store VRF requests
     mapping(uint256 requestId => Requests) s_requests;

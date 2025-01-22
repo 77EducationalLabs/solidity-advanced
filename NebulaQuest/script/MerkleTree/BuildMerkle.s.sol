@@ -56,7 +56,7 @@ contract BuildMerkle is Script, ScriptHelper {
     string private s_output;
 
     /// @dev Read the input file and generate the Merkle proof, then write the output file
-    function run() public {
+    function run() public{
         console.log("Generating Merkle Proof for %s", s_inputPath);
 
         //Iterate over the allowlisted participants

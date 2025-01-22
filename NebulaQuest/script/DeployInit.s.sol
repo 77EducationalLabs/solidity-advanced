@@ -7,6 +7,8 @@ import {Script, console} from "forge-std/Script.sol";
 ///Protocol Contracts
 import {NebulaQuest} from "../src/NebulaQuest.sol";
 import {NebulaQuestPulsar} from "../src/NebulaQuestPulsar.sol";
+import {NebulaAirdrop} from "src/NebulaAirdrop.sol";
+import {NebulaQuestToken} from "src/NebulaQuestToken.sol";
 
 ///General Script
 import {HelperConfig} from "./HelperConfig.s.sol";
@@ -17,66 +19,90 @@ import { VRFAddConsumer } from "./VRF/VRFAddConsumer.s.sol";
 import { VRFFundSubscription } from "./VRF/VRFFundSubscription.s.sol";
 
 contract DeployInit is Script {
-    function run() external returns (NebulaQuest quest, NebulaQuestPulsar pulsar, HelperConfig helperConfig) {
+    HelperConfig s_helperConfig;
+    HelperConfig.NetworkConfig s_config;
+
+    function run() external returns (NebulaQuest quest_, NebulaQuestPulsar pulsar_, NebulaQuestToken token_, NebulaAirdrop drop_, HelperConfig helperConfig_) {
+        
+        helper_prepareEnvironment();
+
+        vm.startBroadcast(s_config.deployer);
+        quest_ = new NebulaQuest(
+            s_config.admin,
+            s_config.dataFeedsAggregator
+        );
+
+        pulsar_ = new NebulaQuestPulsar(
+            s_config.subId,
+            s_config.keyHash,
+            s_config.vrfCoordinator,
+            address(quest_.i_nft())
+        );
+
+        token_ = new NebulaQuestToken(
+            s_config.admin,
+            s_config.admin
+        );
+
+        drop_ = new NebulaAirdrop(
+            s_config.root,
+            token_
+        );
+        vm.stopBroadcast();
+
+        helper_addConsumer(pulsar_);
+
+        helperConfig_ = s_helperConfig;
+    }
+
+    function helper_prepareEnvironment() public {
         ///@notice Deploys a Helper Config which holds all the data from the Config file
-        helperConfig = new HelperConfig();
-        ///@notice Deploys a VRFAddConsumer helper
-        VRFAddConsumer consumer = new VRFAddConsumer();
+        s_helperConfig = new HelperConfig();
         ///@notice gets the struct data for the chain being used
-        HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
+        s_config = s_helperConfig.getConfig();
 
         ///@notice checks if has a valid subscription
-        if (config.subId == 0) {
+        if (s_config.subId == 0) {
             ///@notice if it's not valid. Deploys a create script
             VRFCreateSub create = new VRFCreateSub();
             ///@notice calls `createSubscription` and override the initial config info
-            (config.subId, config.vrfCoordinator) =
-                create.createSubscription(config.vrfCoordinator, config.admin);
+            (s_config.subId, s_config.vrfCoordinator) =
+                create.createSubscription(s_config.vrfCoordinator, s_config.admin);
             
             ///@notice deploys a new funding script
             VRFFundSubscription fund = new VRFFundSubscription();
             ///@notice fund the recently created subscription
             fund.fundSubscription(
-                config.vrfCoordinator, config.subId, config.link, config.admin
+                s_config.vrfCoordinator, s_config.subId, s_config.link, s_config.admin
             );
 
             ///@notice update the helperConfig info for the particular chain with the data recently created.
-            helperConfig.setConfig(block.chainid, config);
+            s_helperConfig.setConfig(block.chainid, s_config);
         } else {
             console.log("Adding funds to Subscription");
             ///@notice deploys a new funding script
             VRFFundSubscription fund = new VRFFundSubscription();
             ///@notice fund the recently created subscription
             fund.fundSubscription(
-                config.vrfCoordinator,
-                config.subId,
-                config.link,
-                config.admin
+                s_config.vrfCoordinator,
+                s_config.subId,
+                s_config.link,
+                s_config.admin
             );
         }
+    }
 
-        vm.startBroadcast(config.deployer);
-        ///Deploy the contracts
-        quest = new NebulaQuest(
-            config.admin,
-            config.dataFeedsAggregator
-        );
-
-        pulsar = new NebulaQuestPulsar(
-            config.subId,
-            config.keyHash,
-            config.vrfCoordinator,
-            address(quest.i_nft())
-        );
-
-        vm.stopBroadcast();
+    function helper_addConsumer(NebulaQuestPulsar _pulsar) public {
+        ///@notice Deploys a VRFAddConsumer helper
+        VRFAddConsumer consumer = new VRFAddConsumer();
 
         ///@notice add the contract deployed as a consumer
         consumer.addConsumer(
-            address(pulsar),
-            config.vrfCoordinator,
-            config.subId,
-            config.admin
+            address(_pulsar),
+            s_config.vrfCoordinator,
+            s_config.subId,
+            s_config.admin
         );
+
     }
 }

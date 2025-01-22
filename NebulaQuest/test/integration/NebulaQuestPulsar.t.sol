@@ -16,7 +16,7 @@ contract NebulaQuestPulsarTest is Helper {
             pulsar.requestRandomWords(numWords);
         }
 
-        function test_requestRandomWordsCreateARequest() public setLevels setAnswers returns(uint256 requestId_, uint32 numOfWords_){
+        function test_requestRandomWordsCreateARequest() public setLevels(s_admin) setAnswers(s_admin) returns(uint256 requestId_, uint32 numOfWords_){
             numOfWords_ = 4;
             
             ///@notice prepare answers and submit for four users
