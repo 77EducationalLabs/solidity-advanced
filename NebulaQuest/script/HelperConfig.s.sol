@@ -24,7 +24,7 @@ contract HelperConfig is Script {
     int256 public constant MOCK_WEI_PER_UNIT_LINK = 1*10**15;
 
     ///@notice it is the result of s_admin = makeAddress("s_admin"); on test file
-    address public constant ADMIN = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+    address public constant ADMIN = 0x18eC188C111868ed5eE6297dC4e92371BA68D468;
     address public constant ADMIN_TESTNET = 0x5FA769922a6428758fb44453815e2c436c57C3c7;
     bytes32 public constant ROOT = 0x864afd4c7895ba9b3dfaafecef38453e7ccac35762c169051c99ed3412f19362;
 
@@ -95,7 +95,7 @@ contract HelperConfig is Script {
         }
     }
 
-    function _getOrCreateAnvilEthConfig() private returns (NetworkConfig memory) {
+    function _getOrCreateAnvilEthConfig() private returns(NetworkConfig memory) {
         // Check to see if we set an active network config
         if (localNetworkConfig.dataFeedsAggregator != address(0)) {
             return localNetworkConfig;
@@ -132,7 +132,7 @@ contract HelperConfig is Script {
         return localNetworkConfig;
     }
 
-    function _getSepoliaEthConfig() private returns (NetworkConfig memory sepoliaNetworkConfig_) {
+    function _getSepoliaEthConfig() private pure returns(NetworkConfig memory sepoliaNetworkConfig_) {
         sepoliaNetworkConfig_ = NetworkConfig({
             admin: ADMIN_TESTNET, //Need to update it with your wallet address
             deployer: ADMIN_TESTNET, // your wallet address
@@ -146,7 +146,7 @@ contract HelperConfig is Script {
         });
     }
 
-    function _getAvalancheFujiConfig() private returns (NetworkConfig memory fujiNetworkConfig_) {
+    function _getAvalancheFujiConfig() private pure returns(NetworkConfig memory fujiNetworkConfig_) {
         fujiNetworkConfig_ = NetworkConfig({
             admin: ADMIN_TESTNET, //Need to update it with
             deployer: ADMIN_TESTNET, // your wallet address
@@ -160,7 +160,7 @@ contract HelperConfig is Script {
         });
     }
 
-    function _getPolygonAmoyConfig() private returns(NetworkConfig memory amoyNetworkConfig_){
+    function _getPolygonAmoyConfig() private pure returns(NetworkConfig memory amoyNetworkConfig_){
         amoyNetworkConfig_ = NetworkConfig({
             admin: ADMIN_TESTNET, //BURNER
             deployer: ADMIN_TESTNET, // your wallet address
