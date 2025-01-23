@@ -62,7 +62,7 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
 
     ///Storage///
     ///@notice mapping to store the answers for each exam
-    mapping(uint8 examNumber => bytes32[] answers) s_examAnswers;
+    mapping(uint8 examNumber => bytes32[] answers) public s_examAnswers;
     ///@notice mapping to store the student's records
     mapping(address student => mapping(uint8 examIndex => uint16 score)) public s_studentsScore;
     ///@notice mapping to store student's information
@@ -203,4 +203,7 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
         info = s_studentInfo[_student];
     }
 
+    function getCorrectAnswers(uint8 _examId) external view returns(bytes32[] memory _answers){
+        _answers = s_examAnswers[_examId];
+    }
 }
