@@ -154,6 +154,7 @@ contract NebulaQuest is Ownable, ReentrancyGuard {
         *@param _score the total points the user achieved on the exam
     */
     function _distributeRewards(uint16 _score) private {
+
         i_coin.mint(msg.sender, _calculateAmountOfTokens(_score));
 
         uint256 score = i_coin.balanceOf(msg.sender) / DECIMALS;
