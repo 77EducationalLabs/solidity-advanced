@@ -1,21 +1,48 @@
+<p align="center">
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjUWPyYTDpJuajmaMWwVL235t05jfFd_jkUKR6N0ZKvhqpd6jhPwmFY-d5gCuFzThgvVrTg2mFce0l2GqxyrsXlyb8x6Cs-i7OdCuiQWDiI23n8sMH8b0e0ypL-gLx_6fXoUNtQ7eA30JlhUSM2M0x0aowilfSj1ORA40QYcLF2hj2kFScWIu2DLvAcCAw=s16000">
+</p>
+
+<p align="center">
+  <a href="https://linktree.com/77innovationlabs" target="_blank"><img src="https://img.shields.io/badge/linktree-5b5b5b?style=for-the-badge&logo=linktree&logoColor=white" target="_blank"></a>
+  <a href="https://www.linkedin.com/company/77innovationlabs/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-3090E6?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a>
+  <a href="https://www.77innovationlabs.com/" target="_blank"><img src="https://img.shields.io/badge/website-262262?style=for-the-badge&logo=www&logoColor=white"></a>
+  <a href="https://www.instagram.com/77innovationlabs" target="_blank"><img src="https://img.shields.io/badge/instagram-5b5b5b?style=for-the-badge&logo=instagram&logoColor=white"></a>
+  <a href="https://x.com/77innovationlab" target="_blank"><img src="https://img.shields.io/badge/x-3090E6?style=for-the-badge&logoColor=white"></a>
+  <a href="https://discord.gg/H2UpdzbbRJ" target="_blank"><img src="https://img.shields.io/badge/discord-262262?style=for-the-badge&logo=discord&logoColor=white"></a>
+  <a href="https://tiktok.com/@77innovationlabs" target="_blank"><img src="https://img.shields.io/badge/tiktok-5b5b5b?style=for-the-badge&logo=tiktok&logoColor=white"></a>
+</p>
+
+</br>
+</br>
+
 <div align="center">
-<h1> Curso Avançado <br>
-Solidity Avançado e Foundry
-</h1> 
 
-<img src="https://blogger.googleusercontent.com/img/a/AVvXsEgmp5we6URvefTI6U46fdVhpByNX9B-m_XWJNSFT81uLIR2CS0WC-690pVd4A5KeDd8DJjuSWOdP9N2oPQm0BaT63Nd2IrArELuBH1eEzjPTHJcjRErtydCDoUOD34zaKIesDZkJsYH0TwDHxY7CvAJg--mn0xD-Asi-kyVlpozkM9JQIBHy_A3AM1tiOM=s16000">
+<h2> 
+  Curso Avançado
+</h2>
 
-<p align="center"><strong>Aprenda a desenvolver contratos inteligentes e seja parte da mudança!</strong></p>
+<h1>
+  Solidity Avançado e Foundry
+</h1>
+
+<p align="center"><strong>🚀 Aprenda a desenvolver contratos inteligentes e seja parte da mudança!</strong></p>
 
 </div>
 
+<br/>
+
+📚 Nossos Cursos:
+
+- [Introdução ao Solidity]()
+- [Solidity Intermediário & Foundry]()
+- [Solidity Avançado & Foundry]()
+
+<br>
+
 Encontrou algum problema ou tem alguma dúvida? Compartilhe conosco na aba [discussões]().
 
-Siga-nos nas redes sociais e fique por dentro de todas as atualizações:
-
-    [Adicionar as Redes aqui]
-
-<br/>
+<br>
+<br>
 
 Nossos Cursos:
 
@@ -25,7 +52,8 @@ Nossos Cursos:
 
 # Sumário
 
-> Bem-vindo ao repositório do Curso! Aqui você encontrará o conteúdo abordado, bem como conteúdo de apoio para reforço de aprendizado.
+> 👋 Bem-vindo ao repositório do Curso! Aqui você encontrará o conteúdo abordado, bem como conteúdo de apoio para reforço de aprendizado.
+<br>
 
 <details>
 
@@ -34,7 +62,7 @@ Nossos Cursos:
 - [Chainlist]()
 - [Testnet Faceuts]()
 - [Documentação do Solidity]()
-
+<br>
 </details>
 
 <details>
@@ -45,7 +73,7 @@ Nossos Cursos:
 <li>Contrato de Airdrop</li>
 <li>Introdução à Oráculos</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -57,7 +85,7 @@ Nossos Cursos:
 <li>Aderyn</li>
 <li>+ Solidity Code Metrics</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -73,7 +101,7 @@ Nossos Cursos:
 <li>Funções Payable</li>
 <li>Erros Customizados</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -85,7 +113,7 @@ Nossos Cursos:
 <li>Staticcall()</li>
 <li>Delegatecall()</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -96,7 +124,7 @@ Nossos Cursos:
 <li>Tipos de Valor x Tipos de Referência</li>
 <li>Herança e Layout</li>
 </ol>
-
+<br>
 </details>
 
 
@@ -109,7 +137,7 @@ Nossos Cursos:
 <li>abi.encodeWithSelector</li>
 <li>abi.encodeWithsignature</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -125,7 +153,7 @@ Nossos Cursos:
 <li>Murky</li>
 <li>Permissões Especiais do Foundry</li>
 </ol>
-
+<br>
 </details>
 
 
@@ -138,7 +166,7 @@ Nossos Cursos:
 <li>Data Feeds</li>
 <li>VRF & Aleatoriedade</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -150,7 +178,7 @@ Nossos Cursos:
 <li>Transparent Proxy</li>
 <li>UUPS Proxy</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -160,7 +188,7 @@ Nossos Cursos:
 <li>Scripts Eficientes</li>
 <li>Como testar scripts</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -172,7 +200,7 @@ Nossos Cursos:
 <li>Open Stateful Fuzzing</li>
 <li>Statefull Fuzzing com Handlers</li>
 </ol>
-
+<br>
 </details>
 
 <details>
@@ -184,12 +212,16 @@ Nossos Cursos:
 <li>Concero & Lanca</li>
 <li>Account Abstraction</li>
 </ol>
-
+<br>
 </details>
 
+<br>
+
+⚠️Os contratos aqui presentes são para fins educacionais, não foram auditados e não devem ser utilizados em produção.
+
+<br>
+
 <div align="center">
-
-<img src="./Imagens/Logo_EDUCACIONAL_PRIMARIA_fundo branco.jpg" width="400px" height="250px">
-
-Contratos aqui presentes são para fins educacionais, não foram auditados e não devem ser utilizados em produção.
+  <p> Powered by </p>
+  <img src="https://blogger.googleusercontent.com/img/a/AVvXsEgKM5h5oO-Jl7faARzR0q2tF3_zCRIQ_Rb6CpwpyMuPg9rsqx_QbcuyHXrV5mO8Jp6qexGsHomTpyqwKqPUucLPmuAF39dyqsdyFBXYvmqzIXOC-9GU3ylyFpR2mn7KmSnuoNhfmmw1DRL3cuqLGDVpNmCF9MCrlivTQH0Xq3NJcAKPR-2GuQHLvX9WMls=s16000" width="15%">
 </div>
