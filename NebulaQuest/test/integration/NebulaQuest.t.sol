@@ -7,7 +7,7 @@ import {Helper} from "../helpers/Helper.t.sol";
 contract NebulaQuest is Helper {
 
     ///Emitting Stablecoins
-        function test_ifMainContractSuccessfullyMintStablecoin() public setAnswers{
+        function test_ifMainContractSuccessfullyMintStablecoin() public setAnswers(s_admin){
             //Mock Data
             uint8 examNumber = 1;
             bytes32[] memory correctAnswers = new bytes32[](10);
@@ -34,7 +34,7 @@ contract NebulaQuest is Helper {
         }
 
     //Burning Stablecoins
-        function test_user01FailsToBurnTokensBecauseOfRole() public setAnswers{
+        function test_user01FailsToBurnTokensBecauseOfRole() public setAnswers(s_admin){
             //Mock Data
             uint8 examNumber = 1;
             bytes32[] memory correctAnswers = new bytes32[](10);
@@ -60,7 +60,7 @@ contract NebulaQuest is Helper {
         }
     
     //Emitting NFT and Updating Storage
-        function test_ifMainContractSuccessfullyMintNFT() public setAnswers{
+        function test_ifMainContractSuccessfullyMintNFT() public setAnswers(s_admin){
             //Mock Data
             uint8 examNumber = 1;
             bytes32[] memory correctAnswers = new bytes32[](10);
@@ -91,7 +91,7 @@ contract NebulaQuest is Helper {
         }
 
         function test_ifMainContractSuccessfullyUpdateNFT() public {
-            multipleExams();
+            multipleExams(s_admin);
 
             //Mock Data
             uint8 firstExam = 1;

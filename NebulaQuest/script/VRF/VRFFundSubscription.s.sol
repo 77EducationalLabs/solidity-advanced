@@ -13,7 +13,8 @@ import { VRFCoordinatorV2_5Mock } from "@chainlink/contracts/src/v0.8/vrf/mocks/
 import { LinkToken } from "@chainlink/contracts/src/v0.8/shared/token/ERC677/LinkToken.sol";
 
 contract VRFFundSubscription is Script {
-    uint96 public constant INITIAL_LINK_AMOUNT = 100*10**18;
+    uint96 public constant LOCAL_INITIAL_LINK_AMOUNT = 100*10**18;
+    uint96 public constant INITIAL_LINK_AMOUNT = 25*10**18;
     uint256 public constant LOCAL_CHAIN_ID = 31337;
 
     /**
@@ -62,7 +63,7 @@ contract VRFFundSubscription is Script {
             ///@notice start broadcasting the account
             vm.startBroadcast(account);
             ///@notice fund the mock subscription with link
-            VRFCoordinatorV2_5Mock(vrfCoordinatorV2_5).fundSubscription(subId, INITIAL_LINK_AMOUNT);
+            VRFCoordinatorV2_5Mock(vrfCoordinatorV2_5).fundSubscription(subId, LOCAL_INITIAL_LINK_AMOUNT);
             vm.stopBroadcast();
             ///@notice if it's not a local chain
         } else {

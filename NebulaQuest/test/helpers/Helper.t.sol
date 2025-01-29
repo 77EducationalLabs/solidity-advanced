@@ -118,22 +118,23 @@ abstract contract Helper is Test {
 
 
     //Setup
-        function setUp() external {
+        function setUp() external virtual {
+            //Creates a new Deployer
             deployQuest = new DeployInit();
-            (quest, pulsar, helperConfig)= deployQuest.run();
 
-            stablecoin = new NebulaStablecoin("Nebula Stablecoin","NSN", s_admin, s_minter);
-            evolution = new NebulaEvolution("Nebula Evolution","NET", s_admin, s_minter);
-            token = new NebulaQuestToken(s_admin, s_admin);
-            drop = new NebulaAirdrop(MERKLE_ROOT, token);
+            //Deploy contracts
+            (quest, pulsar, token, drop, helperConfig)= deployQuest.run();
 
+            //Initiate the user used on the Airdrop testing
             (s_user, s_userPrivateKey) = makeAddrAndKey("s_user");
 
-            //Getters
+            //Get the necessary data from NebulaQuest contract
             coin = quest.i_coin();
             nft = quest.i_nft();
-            ADMIN_ROLE = stablecoin.DEFAULT_ADMIN_ROLE();
-            MINTER_ROLE = stablecoin.MINTER_ROLE();
+            ADMIN_ROLE = coin.DEFAULT_ADMIN_ROLE();
+            MINTER_ROLE = coin.MINTER_ROLE();
+
+            //Get the coordinator to test the NebulaQuestPulsar
             coordinator = VRFCoordinatorV2_5Mock(helperConfig.getConfig().vrfCoordinator);
             
             //Grant minting powers to NebulaAirdrop
@@ -142,16 +143,16 @@ abstract contract Helper is Test {
         }
 
     //Modifiers
-        modifier mintTokens(){
+        modifier mintTokens(address _admin){
             //Mint tokens
-            vm.prank(s_minter);
+            vm.prank(_admin);
             vm.expectEmit();
             emit NebulaStablecoin_TokenMinted(s_user01, AMOUNT_TO_MINT);
-            stablecoin.mint(s_user01, AMOUNT_TO_MINT);
+            coin.mint(s_user01, AMOUNT_TO_MINT);
             _;
         }
 
-        modifier setAnswers(){
+        modifier setAnswers(address _admin){
             //Mock Data
             uint8 examNumber = 1;
             bytes32[] memory correctAnswers = new bytes32[](10);
@@ -167,29 +168,29 @@ abstract contract Helper is Test {
             correctAnswers[9] = keccak256(abi.encodePacked("test10"));
 
             //Test
-            vm.prank(s_admin);
+            vm.prank(_admin);
             vm.expectEmit();
             emit NebulaQuest_AnswersUpdated(examNumber);
             quest.answerSetter(examNumber, correctAnswers);
             _;
         }
 
-        modifier setLevels(){
-            vm.startPrank(s_admin);
-            evolution.levelsSetter(LEVEL_ONE, EXP_ONE);
-            evolution.levelsSetter(LEVEL_TWO, EXP_TWO);
-            evolution.levelsSetter(LEVEL_THREE, EXP_THREE);
-            evolution.levelsSetter(LEVEL_FOUR, EXP_FOUR);
-            evolution.levelsSetter(LEVEL_FIVE, EXP_FIVE);
-            evolution.levelsSetter(LEVEL_SIX, EXP_SIX);
-            evolution.levelsSetter(LEVEL_SEVEN, EXP_SEVEN);
+        modifier setLevels(address _admin){
+            vm.startPrank(_admin);
+            nft.levelsSetter(LEVEL_ONE, EXP_ONE);
+            nft.levelsSetter(LEVEL_TWO, EXP_TWO);
+            nft.levelsSetter(LEVEL_THREE, EXP_THREE);
+            nft.levelsSetter(LEVEL_FOUR, EXP_FOUR);
+            nft.levelsSetter(LEVEL_FIVE, EXP_FIVE);
+            nft.levelsSetter(LEVEL_SIX, EXP_SIX);
+            nft.levelsSetter(LEVEL_SEVEN, EXP_SEVEN);
             vm.stopPrank();
             _;
         }
 
     //Nebula Quest helpers
         ///@notice Function to create Two exams at same time.
-        function multipleExams() public setAnswers{
+        function multipleExams(address _admin) public setAnswers(_admin){
             uint8 examNumber = 2;
             bytes32[] memory correctAnswers = new bytes32[](10);
             correctAnswers[0] = keccak256(abi.encodePacked("secondTest1"));
@@ -204,7 +205,7 @@ abstract contract Helper is Test {
             correctAnswers[9] = keccak256(abi.encodePacked("secondTest10"));
 
             //Test
-            vm.prank(s_admin);
+            vm.prank(_admin);
             vm.expectEmit();
             emit NebulaQuest_AnswersUpdated(examNumber);
             quest.answerSetter(examNumber, correctAnswers);

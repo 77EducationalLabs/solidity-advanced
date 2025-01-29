@@ -51,7 +51,7 @@ contract NebulaQuestTest is Helper {
         }
     
     /// Submit Answers
-        function test_submitAnswersFailsDueToArrayLength() public setAnswers{
+        function test_submitAnswersFailsDueToArrayLength() public setAnswers(s_admin){
             //Mock Data
             uint8 examNumber = 1;
             bytes32[] memory correctAnswers = new bytes32[](5);
@@ -61,7 +61,7 @@ contract NebulaQuestTest is Helper {
             quest.submitAnswers(examNumber, correctAnswers);
         }
 
-        function test_submitAnswersSucceedButUserFailed() public setAnswers{
+        function test_submitAnswersSucceedButUserFailed() public setAnswers(s_admin){
             uint8 examNumber = 1;
             bytes32[] memory correctAnswers = new bytes32[](10);
             correctAnswers[0] = keccak256(abi.encodePacked("test1"));
@@ -80,7 +80,7 @@ contract NebulaQuestTest is Helper {
             quest.submitAnswers(examNumber, correctAnswers);
         }
 
-        function test_submitAnswersSucceedAndUserSucceed() public setAnswers{
+        function test_submitAnswersSucceedAndUserSucceed() public setAnswers(s_admin){
             uint8 examNumber = 1;
             bytes32[] memory correctAnswers = new bytes32[](10);
             correctAnswers[0] = keccak256(abi.encodePacked("test1"));

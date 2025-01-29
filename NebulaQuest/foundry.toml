@@ -13,3 +13,8 @@ remappings = [
                 "@local/src/=lib/chainlink-local/src/",
                 "@cyfrin/src/=lib/foundry-devops/src/"
 ]
+
+[fuzz]
+runs = 128
+depth = 128
+fail_on_revert = false

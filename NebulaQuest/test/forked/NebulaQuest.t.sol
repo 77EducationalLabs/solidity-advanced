@@ -27,18 +27,18 @@ contract NebulaQuestForkedTest is ForkedHelper {
             bytes32[] memory wrongAnswers = new bytes32[](1);
 
             //Should Revert
-            vm.prank(s_admin);
+            vm.prank(s_forkedAdmin);
             vm.expectRevert(abi.encodeWithSelector(NebulaQuest_WrongAmountOfAnswers.selector, 1, 10));
             quest.answerSetter(examNumber, wrongAnswers);
 
             //Should Succeed
-            vm.prank(s_admin);
+            vm.prank(s_forkedAdmin);
             vm.expectEmit();
             emit NebulaQuest_AnswersUpdated(examNumber);
             quest.answerSetter(examNumber, correctAnswers);
         }
 
-        function test_submitAnswers() public setAnswers{
+        function test_submitAnswers() public setAnswers(s_forkedAdmin){
             //Mock Data
             uint8 examNumber = 1;
             bytes32[] memory wrongAnswers = new bytes32[](5);
@@ -83,7 +83,7 @@ contract NebulaQuestForkedTest is ForkedHelper {
             //Should succeed and be approved
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaQuest_ExamPassed(s_user01, examNumber, SCORE_TEN_OF_TEN);
+            emit NebulaQuest_ExamPassed(s_user01, examNumber, uint16(SCORE_TEN_OF_TEN));
             quest.submitAnswers(examNumber, correctAnswers);
 
             //Query data
@@ -99,9 +99,10 @@ contract NebulaQuestForkedTest is ForkedHelper {
         }
 
     //NFT Updates
-        function test_updateNFT() public setLevels{
+        function test_updateNFT() public setLevels(s_forkedAdmin){
             //Initiate Two Exams
-            multipleExams();
+            console2.log("Call Multiple Exams");
+            multipleExams(s_forkedAdmin);
 
             //First Submission
             uint8 firstExam = 1;
@@ -119,7 +120,7 @@ contract NebulaQuestForkedTest is ForkedHelper {
 
             vm.prank(s_user01);
             vm.expectEmit();
-            emit NebulaQuest_ExamPassed(s_user01, firstExam, SCORE_TEN_OF_TEN);
+            emit NebulaQuest_ExamPassed(s_user01, firstExam, uint16(SCORE_TEN_OF_TEN));
             quest.submitAnswers(firstExam, firstAnswers);
 
             //Second Submission
