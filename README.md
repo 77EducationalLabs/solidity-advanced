@@ -42,13 +42,24 @@
 Encontrou algum problema ou tem alguma dúvida? Compartilhe conosco na aba [discussões]().
 
 <br>
+
+<details>
+
+<summary>⚠️ Condições para Iniciar esse curso ⚠️</summary>
+Para iniciar esse curso você precisa atender alguns requisitos:
+
+- Ter um conhecimento intermediário de Solidity e Foundry.
+- Ter noções dos Padrões de Desenvolvimento e Boas práticas
+  - Você pode adquirir o conhecimento apontado acima através dos seguintes cursos
+    - [Introdução ao Solidity]()
+    - [Solidity Intermediário & Foundry]()
+- Possuir o [Vscode](https://code.visualstudio.com/download) instalado em sua máquina.
+- Compatibilidade com o Foundry.
+  - No sistema operacional Windows, você precisará interagir com o Foundry através do git bash.
+    - Indicamos a instalação do [WSL](https://learn.microsoft.com/en-us/windows/wsl/install). Caso contrário você enfrentará dificuldades na interação com algumas ferramentas.
+
 <br>
-
-Nossos Cursos:
-
-- [Introdução ao Solidity]()
-- [Solidity Intermediário & Foundry]()
-- [Solidity Avançado & Foundry]()
+</details>
 
 # Sumário
 
@@ -59,9 +70,18 @@ Nossos Cursos:
 
 <summary>Links Úteis</summary>
 
-- [Chainlist]()
-- [Testnet Faceuts]()
-- [Documentação do Solidity]()
+- [Documentação do Solidity](https://docs.soliditylang.org/en/stable/)
+- [Chainlist](https://chainlist.org/)
+- [Testnet Faceuts](https://cloud.google.com/application/web3/faucet/ethereum/sepolia)
+- [Alchemy](http://www.alchemy.com/)
+- [Foundry](https://book.getfoundry.sh/)
+- [Slither](https://github.com/crytic/slither#how-to-install)
+- [Aderyn](https://github.com/Cyfrin/aderyn)
+- [Tldraw](tldraw.com)
+- [Storage Layout](https://docs.soliditylang.org/en/latest/internals/layout_in_storage.html#layout-of-state-variables-in-storage-and-transient-storage)
+- [Custom Murky Script](https://github.com/77EducationalLabs/solidity-advanced/tree/main/NebulaQuest/script)
+- [Precision Loss](https://blocksecteam.medium.com/yet-another-tragedy-of-precision-loss-an-in-depth-analysis-of-the-kyberswap-incident-b0556022a570)
+
 <br>
 </details>
 
